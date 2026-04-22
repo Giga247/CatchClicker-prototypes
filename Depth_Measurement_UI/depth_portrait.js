@@ -114,6 +114,24 @@ let conn = false;
 function refreshSaveState() {
   const b = document.getElementById("bsave");
   if (b) b.disabled = run || msEl <= 0;
+  updateStartPrompt();
+}
+function updateStartPrompt() {
+  const hint = document.getElementById("start-hint");
+  const startBtn = document.getElementById("bst");
+  const show = !run && msEl <= 0;
+  if (hint) hint.classList.toggle("hidden", !show);
+  if (startBtn) startBtn.classList.toggle("start-attn", show);
+}
+function adjustDistance(delta) {
+  const inp = document.getElementById("din");
+  if (!inp) return;
+  const min = parseFloat(inp.min || "1");
+  const max = parseFloat(inp.max || "300");
+  const cur = parseFloat(inp.value || "0") || min;
+  const next = Math.max(min, Math.min(max, Math.round(cur + delta)));
+  inp.value = String(next);
+  inp.focus();
 }
 function toggleControls() {
   controlsOpen = !controlsOpen;
@@ -152,8 +170,11 @@ function updateSeg(ms) {
 }
 function startSW() {
   if (run) return;
+  msEl = 0;
+  prev = {};
+  updateSeg(0);
   run = true;
-  t0 = Date.now() - msEl;
+  t0 = Date.now();
   refreshSaveState();
   iv = setInterval(() => {
     msEl = Date.now() - t0;
