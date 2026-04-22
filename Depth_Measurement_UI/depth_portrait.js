@@ -242,7 +242,7 @@ function deletePoint(i) {
   renderAll();
 }
 function clearAll(e) {
-  e.stopPropagation();
+  if (e) e.stopPropagation();
   if (!pts.length) return;
   if (!confirm("Clear all?")) return;
   undo.push(snapshot(pts));
@@ -252,10 +252,35 @@ function clearAll(e) {
   renderAll();
 }
 function toggleList() {
-  lo = !lo;
-  document.getElementById("lbody").classList.toggle("open", lo);
-  document.getElementById("lw").classList.toggle("open", lo);
-  document.getElementById("la").style.transform = lo ? "rotate(180deg)" : "rotate(0)";
+  if (lo) closeTableModal();
+  else openTableModal();
+}
+function openTableModal() {
+  lo = true;
+  const modal = document.getElementById("table-modal");
+  if (modal) {
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+  }
+  const lw = document.getElementById("lw");
+  if (lw) lw.classList.add("open");
+  const la = document.getElementById("la");
+  if (la) la.style.transform = "rotate(180deg)";
+  document.body.classList.add("modal-open");
+  renderList();
+}
+function closeTableModal() {
+  lo = false;
+  const modal = document.getElementById("table-modal");
+  if (modal) {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+  }
+  const lw = document.getElementById("lw");
+  if (lw) lw.classList.remove("open");
+  const la = document.getElementById("la");
+  if (la) la.style.transform = "rotate(0)";
+  document.body.classList.remove("modal-open");
 }
 function toggleConnect() {
   conn = !conn;
@@ -330,6 +355,8 @@ function renderAll(mode, prevPts) {
   const n = pts.length;
   document.getElementById("pc").textContent = n + " pts";
   document.getElementById("lb").textContent = n + " pts";
+  const mc = document.getElementById("modal-count");
+  if (mc) mc.textContent = n + " pts";
   refreshHistoryButtons();
   renderChart(mode, prevPts);
   renderList();
@@ -426,7 +453,10 @@ function renderList() {
       return `<div class="lrow${ei === i ? " ed" : ""}"><div class="rn">${pts.length - ri}</div>${dc}${sc}<button class="bdel" onclick="deletePoint(${i})"><svg width="8" height="9" viewBox="0 0 8 9" fill="none"><path d="M1 2h6M3 3.5v3M5 3.5v3M1.5 2l.4 5h4.2L6 2" stroke="#EA523E" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>`;
     })
     .join("");
-  document.getElementById("lr").innerHTML = h || '<div style="padding:8px;text-align:center;font-size:11px;color:#8E8E93;">No data</div>';
+  const modalRows = document.getElementById("lr-modal");
+  if (modalRows) {
+    modalRows.innerHTML = h || '<div style="padding:10px;text-align:center;font-size:11px;color:#8E8E93;">No data</div>';
+  }
 }
 function initMetaDefaults() {
   const t = document.getElementById("chart-time");
@@ -443,3 +473,6 @@ pts = [...PRELOAD_POINTS];
 renderAll();
 initMetaDefaults();
 window.addEventListener("resize", () => renderAll());
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && lo) closeTableModal();
+});

@@ -16,6 +16,9 @@
       <div class="logo-title">#CatchClicker Depth</div>
       <div class="logo-subtitle">Proto 1.0</div>
     </div>
+    <button class="cbtn top-connect-btn" id="cbtn" onclick="toggleConnect()">
+      <span class="dot"></span><span id="clbl">Connect</span>
+    </button>
   </div>
 
   <div class="meta-card page-meta">
@@ -31,38 +34,36 @@
       <span class="meta-label">Location</span>
       <input id="chart-location" class="meta-input" type="text" value="Lake Spot 1">
     </label>
-    <button class="panel-btn meta-panel-btn" id="bpanel" onclick="toggleControls()" title="Hide controls">-</button>
   </div>
 
-  <div class="controls" id="controls">
-    <div class="topbar">
-      <div class="brand">#<span>CatchClicker</span> Depth</div>
-      <button class="cbtn" id="cbtn" onclick="toggleConnect()">
-        <span class="dot"></span><span id="clbl">Connect</span>
-      </button>
+  <div class="controls-shell">
+    <div class="controls-head">
+      <div class="controls-title">Measurement Controls</div>
+      <button class="panel-btn controls-panel-btn" id="bpanel" onclick="toggleControls()" title="Hide controls">-</button>
     </div>
-
-    <div class="row-ss">
-      <button id="bst" class="btn-main btn-start" onclick="startSW()">Start</button>
-      <button id="bsp" class="btn-main btn-stop" onclick="stopSW()" disabled>Stop</button>
-    </div>
-
-    <div class="sink-card">
-      <div class="card-label">Sink Time</div>
-      <div class="seg-row" id="seg-disp"></div>
-      <div class="sub-row" id="sub-row"></div>
-    </div>
-
-    <div class="row-dp">
-      <div class="dist-card">
-        <div class="dist-label">Distance</div>
-        <input class="dinp" id="din" type="number" min="1" max="300" value="50">
-        <div class="dist-unit">Metres</div>
+    <div class="controls" id="controls">
+      <div class="row-ss">
+        <button id="bst" class="btn-main btn-start" onclick="startSW()">Start</button>
+        <button id="bsp" class="btn-main btn-stop" onclick="stopSW()" disabled>Stop</button>
       </div>
-      <button class="save-btn" id="bsave" onclick="plotPoint()">
-        <span class="save-plus">+</span>
-        <span class="save-label">Save</span>
-      </button>
+
+      <div class="sink-card">
+        <div class="card-label">Sink Time</div>
+        <div class="seg-row" id="seg-disp"></div>
+        <div class="sub-row" id="sub-row"></div>
+      </div>
+
+      <div class="row-dp">
+        <div class="dist-card">
+          <div class="dist-label">Distance</div>
+          <input class="dinp" id="din" type="number" min="1" max="300" value="50">
+          <div class="dist-unit">Metres</div>
+        </div>
+        <button class="save-btn" id="bsave" onclick="plotPoint()">
+          <span class="save-plus">+</span>
+          <span class="save-label">Save</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -73,11 +74,7 @@
         <div class="lw" id="lw">
           <div class="ltog" onclick="toggleList()">
             <div class="ltl"><span class="llbl">Measurements</span><span class="badge" id="lb">0 pts</span></div>
-            <div class="ltr"><button class="bclr" onclick="clearAll(event)">Clear</button><span class="arr" id="la">v</span></div>
-          </div>
-          <div class="lbody" id="lbody">
-            <div class="lcols"><span class="ch">#</span><span class="ch">Dist</span><span class="ch">Sink</span><span></span></div>
-            <div id="lr"></div>
+            <div class="ltr"><span class="arr" id="la">v</span></div>
           </div>
         </div>
         <span class="chart-pts" id="pc">0 pts</span>
@@ -94,11 +91,27 @@
       <div class="plot-frame" id="plot-frame">
         <canvas id="c"></canvas>
       </div>
-      <div class="y-mode y-mode-bottom">
+      <div class="y-mode y-mode-left-bottom" aria-label="Y axis scale controls">
         <button class="ymb active" data-mode="auto" onclick="setYAxisMode('auto',this)">Auto</button>
         <button class="ymb" data-mode="equal" onclick="setYAxisMode('equal',this)">Y=X</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="table-modal" id="table-modal" aria-hidden="true">
+  <div class="table-modal-backdrop" onclick="closeTableModal()"></div>
+  <div class="table-modal-sheet" role="dialog" aria-modal="true" aria-label="Measurements table">
+    <div class="table-modal-head">
+      <div class="table-modal-title">Measurements</div>
+      <div class="table-modal-actions">
+        <span class="chart-pts" id="modal-count">0 pts</span>
+        <button class="bclr" onclick="clearAll(event)">Clear</button>
+        <button class="b-undo" onclick="closeTableModal()" aria-label="Close">x</button>
+      </div>
+    </div>
+    <div class="lcols"><span class="ch">#</span><span class="ch">Dist</span><span class="ch">Sink</span><span></span></div>
+    <div class="table-modal-body" id="lr-modal"></div>
   </div>
 </div>
 
