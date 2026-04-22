@@ -7,6 +7,8 @@
 }
 html,body{font-family:'Jost',sans-serif;background:#000;color:var(--tx);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:14px 0}
 .phone{width:393px;min-height:852px;background:var(--bg);border-radius:44px;overflow:hidden;display:flex;flex-direction:column;padding:12px 14px 16px;gap:10px}
+.logo-top{display:flex;justify-content:center;align-items:center;padding:2px 0 4px}
+.logo-top-img{height:22px;width:auto;display:block;opacity:.95}
 .meta-card{display:grid;grid-template-columns:1fr;gap:7px;background:linear-gradient(180deg,rgba(44,44,46,.95),rgba(44,44,46,.78));border:.5px solid var(--s2);border-radius:14px;padding:7px}
 .meta-field{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;min-width:0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:4px 8px;height:34px}
 .meta-label{font-size:8px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
@@ -18,9 +20,8 @@ html,body{font-family:'Jost',sans-serif;background:#000;color:var(--tx);min-heig
 .controls{display:flex;flex-direction:column;gap:8px;max-height:360px;opacity:1;overflow:hidden;transition:max-height .28s ease,opacity .2s ease,margin .28s ease}
 .phone.controls-collapsed .controls{max-height:0;opacity:0;margin-top:-2px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.brand{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--tx3)}
+.brand{font-size:12px;font-weight:700;color:var(--tx3)}
 .brand span{color:var(--g)}
-.brand-logo{height:16px;width:auto;display:block;flex-shrink:0}
 .cbtn{display:flex;align-items:center;gap:5px;background:var(--s1);border:1px solid var(--s2);border-radius:20px;padding:4px 11px;font-family:'Jost',sans-serif;font-size:11px;font-weight:600;color:var(--tx3);cursor:pointer;transition:all .2s}
 .cbtn.on{border-color:var(--g);color:var(--g);background:var(--gdim)}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--tx3);flex-shrink:0}
