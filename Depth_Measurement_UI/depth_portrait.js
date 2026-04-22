@@ -201,24 +201,7 @@ function resetSW() {
   refreshSaveState();
 }
 
-const PRELOAD_DATA = [
-  { dist: 69, sinks: [12.6, 12.7] },
-  { dist: 65, sinks: [11.4, 11.9] },
-  { dist: 61, sinks: [11.2, 11.7] },
-  { dist: 57, sinks: [10.9, 10.5] },
-  { dist: 53, sinks: [10.2, 10.0] },
-  { dist: 49, sinks: [8.8, 8.6] },
-  { dist: 45, sinks: [8.0, 8.6, 8.4] },
-  { dist: 41, sinks: [7.1, 6.5, 7.2] },
-  { dist: 36, sinks: [3.7, 3.7] },
-  { dist: 33, sinks: [2.4, 2.5] },
-  { dist: 30, sinks: [2.1] },
-  { dist: 27, sinks: [2.0] },
-  { dist: 24, sinks: [1.9, 2.1] },
-];
-const PRELOAD_POINTS = PRELOAD_DATA.flatMap((row) =>
-  row.sinks.map((s) => ({ dist: row.dist, sink: Math.round(s * 1000) })),
-);
+const PRELOAD_POINTS = [];
 
 function snapshot(v) {
   return JSON.parse(JSON.stringify(v));
