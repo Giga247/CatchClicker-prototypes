@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CatchClicker - Depth Mode (Landscape)</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="depth_landscape.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="phone">
+  <div class="meta-card page-meta">
+    <label class="meta-field">
+      <span class="meta-label">Chart</span>
+      <input id="chart-name" class="meta-input" type="text" value="Depth Session A">
+    </label>
+    <label class="meta-field">
+      <span class="meta-label">Time</span>
+      <input id="chart-time" class="meta-input" type="datetime-local">
+    </label>
+    <label class="meta-field">
+      <span class="meta-label">Location</span>
+      <input id="chart-location" class="meta-input" type="text" value="Lake Spot 1">
+    </label>
+    <button class="panel-btn meta-panel-btn" id="bpanel" onclick="toggleLeftPanel()" title="Hide left panel">◧</button>
+  </div>
+
+  <div class="main-grid">
+    <div class="left">
+      <div class="topbar">
+        <div class="brand">#<span>CatchClicker</span> Depth</div>
+        <button class="cbtn" id="cbtn" onclick="toggleConnect()">
+          <span class="dot"></span><span id="clbl">Connect</span>
+        </button>
+      </div>
+
+      <div class="row-ss">
+        <button id="bst" class="btn-main btn-start" onclick="startSW()">Start</button>
+        <button id="bsp" class="btn-main btn-stop" onclick="stopSW()" disabled>Stop</button>
+      </div>
+
+      <div class="sink-card">
+        <div class="card-label">Sink Time</div>
+        <div class="seg-row" id="seg-disp"></div>
+        <div class="sub-row" id="sub-row"></div>
+      </div>
+
+      <div class="row-dp">
+        <div class="dist-card">
+          <div class="dist-label">Distance</div>
+          <input class="dinp" id="din" type="number" min="1" max="300" value="50">
+          <div class="dist-unit">Metres</div>
+        </div>
+        <button class="save-btn" id="bsave" onclick="plotPoint()">
+          <span class="save-plus">+</span>
+          <span class="save-label">Save</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="chart-top">
+        <span class="chart-lbl">Distance vs Sink Time</span>
+        <div class="chart-right-row">
+          <div class="lw" id="lw">
+            <div class="ltog" onclick="toggleList()">
+              <div class="ltl"><span class="llbl">Measurements</span><span class="badge" id="lb">0 pts</span></div>
+              <div class="ltr"><button class="bclr" onclick="clearAll(event)">Clear</button><span class="arr" id="la">v</span></div>
+            </div>
+            <div class="lbody" id="lbody">
+              <div class="lcols"><span class="ch">#</span><span class="ch">Dist</span><span class="ch">Sink</span><span></span></div>
+              <div id="lr"></div>
+            </div>
+          </div>
+          <span class="chart-pts" id="pc">0 pts</span>
+          <button class="b-undo" id="bundo" onclick="undoLast()" aria-label="Undo">↶</button>
+          <button class="b-undo" id="bredo" onclick="redoLast()" aria-label="Redo">↷</button>
+        </div>
+      </div>
+      <div class="cw" id="cw">
+        <div class="plot-frame" id="plot-frame">
+          <canvas id="c"></canvas>
+        </div>
+        <div class="y-mode y-mode-bottom">
+          <button class="ymb active" data-mode="auto" onclick="setYAxisMode('auto',this)">Auto</button>
+          <button class="ymb" data-mode="equal" onclick="setYAxisMode('equal',this)">Y=X</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="depth_landscape.js"></script>
+</body>
+</html>
