@@ -131,6 +131,11 @@ function adjustDistance(delta) {
   const cur = parseFloat(inp.value || "0") || min;
   const next = Math.max(min, Math.min(max, Math.round(cur + delta)));
   inp.value = String(next);
+  if (typeof inp.setSelectionRange === "function") {
+    const end = inp.value.length;
+    inp.setSelectionRange(end, end);
+  }
+  inp.blur();
 }
 function toggleControls() {
   controlsOpen = !controlsOpen;
