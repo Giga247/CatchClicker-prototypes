@@ -445,11 +445,11 @@ function renderList() {
     .map((p, ri) => {
       const i = p.oi;
       const dc = ei === i && ef === "dist"
-        ? `<input class="ei" id="ei" value="${p.dist}" type="number" style="color:#ADD144;" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
-        : `<div class="rv g e" ondblclick="startEdit(${i},'dist')">${p.dist}m</div>`;
+        ? `<input class="ei" id="ei" value="${p.dist}" type="number" inputmode="decimal" style="color:#ADD144;" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
+        : `<div class="rv g e" onclick="startEdit(${i},'dist')" ondblclick="startEdit(${i},'dist')">${p.dist}m</div>`;
       const sc = ei === i && ef === "sink"
-        ? `<input class="ei" id="ei" value="${(p.sink / 1000).toFixed(1)}" type="number" min="0" step="0.1" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
-        : `<div class="rv e" ondblclick="startEdit(${i},'sink')">${(p.sink / 1000).toFixed(1)}s</div>`;
+        ? `<input class="ei" id="ei" value="${(p.sink / 1000).toFixed(1)}" type="number" inputmode="decimal" min="0" step="0.1" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
+        : `<div class="rv e" onclick="startEdit(${i},'sink')" ondblclick="startEdit(${i},'sink')">${(p.sink / 1000).toFixed(1)}s</div>`;
       return `<div class="lrow${ei === i ? " ed" : ""}"><div class="rn">${pts.length - ri}</div>${dc}${sc}<button class="bdel" onclick="deletePoint(${i})"><svg width="8" height="9" viewBox="0 0 8 9" fill="none"><path d="M1 2h6M3 3.5v3M5 3.5v3M1.5 2l.4 5h4.2L6 2" stroke="#EA523E" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>`;
     })
     .join("");
