@@ -57,7 +57,7 @@
         <div class="dist-card">
           <div class="dist-label">Distance</div>
           <div class="dist-edit-row">
-            <input class="dinp" id="din" type="number" min="1" max="300" step="2" value="50" inputmode="numeric">
+            <input class="dinp" id="din" type="text" value="50" inputmode="numeric" pattern="[0-9]*" maxlength="3">
             <div class="dist-step-col">
               <button class="dist-step" type="button" onclick="adjustDistance(2)" aria-label="Increase distance by 2">+</button>
               <button class="dist-step" type="button" onclick="adjustDistance(-2)" aria-label="Decrease distance by 2">-</button>

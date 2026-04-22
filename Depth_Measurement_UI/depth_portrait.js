@@ -126,8 +126,8 @@ function updateStartPrompt() {
 function adjustDistance(delta) {
   const inp = document.getElementById("din");
   if (!inp) return;
-  const min = parseFloat(inp.min || "1");
-  const max = parseFloat(inp.max || "300");
+  const min = 1;
+  const max = 300;
   const cur = parseFloat(inp.value || "0") || min;
   const next = Math.max(min, Math.min(max, Math.round(cur + delta)));
   inp.value = String(next);
@@ -473,6 +473,19 @@ function initDistanceInputBehavior() {
   const din = document.getElementById("din");
   if (!din) return;
   const selectAll = () => din.select();
+  const normalize = () => {
+    const digits = (din.value || "").replace(/[^\d]/g, "").slice(0, 3);
+    if (!digits) {
+      din.value = "1";
+      return;
+    }
+    const clamped = Math.max(1, Math.min(300, parseInt(digits, 10)));
+    din.value = String(clamped);
+  };
+  din.addEventListener("input", () => {
+    din.value = (din.value || "").replace(/[^\d]/g, "").slice(0, 3);
+  });
+  din.addEventListener("blur", normalize);
   din.addEventListener("focus", selectAll);
   din.addEventListener("click", selectAll);
 }
