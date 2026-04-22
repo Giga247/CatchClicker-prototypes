@@ -469,6 +469,13 @@ function initMetaDefaults() {
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   t.value = local;
 }
+function initDistanceInputBehavior() {
+  const din = document.getElementById("din");
+  if (!din) return;
+  const selectAll = () => din.select();
+  din.addEventListener("focus", selectAll);
+  din.addEventListener("click", selectAll);
+}
 
 buildDisplay();
 updateSeg(0);
@@ -476,6 +483,7 @@ refreshSaveState();
 pts = [...PRELOAD_POINTS];
 renderAll();
 initMetaDefaults();
+initDistanceInputBehavior();
 window.addEventListener("resize", () => renderAll());
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && lo) closeTableModal();
