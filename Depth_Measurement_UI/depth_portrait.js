@@ -131,7 +131,6 @@ function adjustDistance(delta) {
   const cur = parseFloat(inp.value || "0") || min;
   const next = Math.max(min, Math.min(max, Math.round(cur + delta)));
   inp.value = String(next);
-  inp.focus();
 }
 function toggleControls() {
   controlsOpen = !controlsOpen;
