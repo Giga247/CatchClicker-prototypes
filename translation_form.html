@@ -383,10 +383,6 @@
         </select>
       </div>
     </div>
-    <div style="margin-bottom:16px;">
-      <div class="field-label">Google Sheet Web App URL</div>
-      <input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec">
-    </div>
     <button class="btn-start" onclick="startTranslating()">Start Translating →</button>
   </div>
 </div>
@@ -734,6 +730,9 @@ const STRINGS = [
   {key:"try_label",en:"TRY"},
 ];
 
+// ── CONFIG ── შეცვალე შენი Apps Script URL-ით
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5OUlabH05ToSuf2ZrL2XbfE1Ejq5YqquzcwORog8M_nfgndu-arFq45nFJ4xn__MKkw/exec";
+
 // ── STATE ──
 const state = { translations: {}, skipped: new Set(), filter: 'all' };
 let cfg = {};
@@ -741,11 +740,9 @@ let cfg = {};
 function startTranslating() {
   const name = document.getElementById('translatorName').value.trim();
   const lang = document.getElementById('targetLang').value;
-  const url  = document.getElementById('sheetUrl').value.trim();
   if (!name) return showToast('Enter your name', 'error');
   if (!lang) return showToast('Select a language', 'error');
-  if (!url)  return showToast('Enter the Apps Script URL', 'error');
-  cfg = { name, lang, url };
+  cfg = { name, lang, url: APPS_SCRIPT_URL };
   document.getElementById('setupPanel').style.display = 'none';
   document.getElementById('mainArea').style.display = 'block';
   document.getElementById('submitBar').style.display = 'flex';
