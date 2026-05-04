@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CatchClicker — Translation Tool</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #1C1C1E;
+    --surface: #2C2C2E;
+    --surface2: #3A3A3C;
+    --green: #ADD144;
+    --green-dim: rgba(173,209,68,0.15);
+    --red: #EA523E;
+    --text: #F5F5F7;
+    --text-muted: #8E8E93;
+    --border: rgba(255,255,255,0.08);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .header-logo span { color: var(--green); }
+  .header-badge {
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgba(173,209,68,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── SETUP PANEL ── */
+  .setup-panel {
+    max-width: 700px;
+    margin: 40px auto 0;
+    padding: 0 24px;
+  }
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+  }
+  .setup-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .setup-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+  input, select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus { border-color: var(--green); }
+  select option { background: var(--surface2); }
+
+  .btn-start {
+    width: 100%;
+    margin-top: 8px;
+    background: var(--green);
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 20px;
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-start:hover { opacity: 0.9; }
+  .btn-start:active { transform: scale(0.99); }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    background: var(--surface2);
+    border-radius: 99px;
+    height: 4px;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── MAIN CONTAINER ── */
+  .main {
+    max-width: 1100px;
+    margin: 32px auto;
+    padding: 0 24px;
+    display: none;
+  }
+
+  /* ── STRING CARD ── */
+  .string-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .string-card.done { border-color: rgba(173,209,68,0.4); }
+  .string-card.skipped { border-color: rgba(255,255,255,0.04); opacity: 0.55; }
+
+  .card-inner {
+    display: grid;
+    grid-template-columns: 260px 1fr auto;
+    align-items: center;
+    gap: 0;
+  }
+
+  .col-key {
+    padding: 16px 20px;
+    border-right: 1px solid var(--border);
+  }
+  .key-name {
+    font-size: 11px;
+    font-family: 'Courier New', monospace;
+    color: var(--green);
+    word-break: break-all;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .key-english {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .col-input {
+    padding: 14px 20px;
+  }
+  .col-input input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: 8px 0;
+    font-size: 15px;
+    width: 100%;
+  }
+  .col-input input:focus { border-bottom-color: var(--green); }
+  .col-input input::placeholder { color: var(--text-muted); font-style: italic; }
+
+  .col-action {
+    padding: 14px 20px;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .btn-skip {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-skip:hover { border-color: var(--text-muted); color: var(--text); }
+
+  .check-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--green-dim);
+    border: 1px solid rgba(173,209,68,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .check-icon svg { display: block; }
+
+  /* ── SUBMIT BAR ── */
+  .submit-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(28,28,30,0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 16px 32px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 200;
+  }
+  .submit-info {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .submit-info strong { color: var(--text); }
+  .btn-submit {
+    background: var(--green);
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-submit:hover { opacity: 0.9; }
+  .btn-submit:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 10px 20px;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 300;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: rgba(173,209,68,0.4); color: var(--green); }
+  .toast.error { border-color: rgba(234,82,62,0.4); color: var(--red); }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    color: var(--text-muted);
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn.active {
+    background: var(--green-dim);
+    border-color: rgba(173,209,68,0.4);
+    color: var(--green);
+  }
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 7px 16px;
+    font-size: 13px;
+  }
+
+  .section-spacer { height: 80px; }
+
+  @media (max-width: 640px) {
+    .card-inner { grid-template-columns: 1fr; }
+    .col-key { border-right: none; border-bottom: 1px solid var(--border); }
+    .setup-row { grid-template-columns: 1fr; }
+    .header { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    🎣 Catch<span>Clicker</span>
+  </div>
+  <div class="header-badge">Translation Tool</div>
+</div>
+
+<!-- SETUP -->
+<div class="setup-panel" id="setupPanel">
+  <div class="setup-card">
+    <div class="setup-title">Translator Setup</div>
+    <div class="setup-row">
+      <div>
+        <div class="field-label">Your Name</div>
+        <input type="text" id="translatorName" placeholder="e.g. Giorgi M." autocomplete="name">
+      </div>
+      <div>
+        <div class="field-label">Target Language</div>
+        <select id="targetLang">
+          <option value="">— Select language —</option>
+          <option value="Georgian">Georgian (ქართული)</option>
+          <option value="German">German (Deutsch)</option>
+          <option value="French">French (Français)</option>
+          <option value="Spanish">Spanish (Español)</option>
+          <option value="Italian">Italian (Italiano)</option>
+          <option value="Polish">Polish (Polski)</option>
+          <option value="Russian">Russian (Русский)</option>
+          <option value="Turkish">Turkish (Türkçe)</option>
+          <option value="Dutch">Dutch (Nederlands)</option>
+          <option value="Portuguese">Portuguese (Português)</option>
+          <option value="Czech">Czech (Čeština)</option>
+          <option value="Hungarian">Hungarian (Magyar)</option>
+          <option value="Romanian">Romanian (Română)</option>
+          <option value="Swedish">Swedish (Svenska)</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div class="field-label">Google Sheet Web App URL</div>
+      <input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec">
+    </div>
+    <button class="btn-start" onclick="startTranslating()">Start Translating →</button>
+  </div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main" id="mainArea">
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All (<span id="countAll">0</span>)</button>
+    <button class="filter-btn" onclick="setFilter('pending', this)">Pending (<span id="countPending">0</span>)</button>
+    <button class="filter-btn" onclick="setFilter('done', this)">Done (<span id="countDone">0</span>)</button>
+    <input class="search-input" type="text" id="searchInput" placeholder="Search keys or text…" oninput="renderCards()">
+  </div>
+
+  <div id="cardsContainer"></div>
+  <div class="section-spacer"></div>
+</div>
+
+<!-- SUBMIT BAR -->
+<div class="submit-bar" id="submitBar">
+  <div class="submit-info">
+    <strong id="doneCount">0</strong> translated &nbsp;·&nbsp; <span id="pendingCount">0</span> remaining
+  </div>
+  <button class="btn-submit" id="submitBtn" onclick="submitAll()">Submit to Google Sheets</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── ALL STRINGS from strings.xml ──
+const STRINGS = [
+  {key:"email_address",en:"Email Address"},
+  {key:"password",en:"Password"},
+  {key:"forgot_password",en:"Forgot password?"},
+  {key:"sign_in",en:"Sign in"},
+  {key:"or",en:"Or"},
+  {key:"dont_have_account",en:"Don't have an account yet?"},
+  {key:"sign_up",en:"Sign up"},
+  {key:"onboarding_title_1",en:"Welcome to CatchClicker"},
+  {key:"onboarding_description_1",en:"Welcome to CatchClicker! Your ultimate fishing companion now offers real-time data tracking and effortless team connection."},
+  {key:"onboarding_title_2",en:"Real-Time Data Transfer"},
+  {key:"onboarding_description_2",en:"Connect CatchClicker to your phone for seamless data transfer. Monitor your fishing stats in real-time and make informed decisions on the go."},
+  {key:"onboarding_title_3",en:"Team Performance"},
+  {key:"onboarding_description_3",en:"Stay ahead with CatchClicker's team monitoring. View and analyze your team's data in real-time to foster collaboration and gain a competitive edge"},
+  {key:"onboarding_title_4",en:"Comprehensive Analytics"},
+  {key:"onboarding_description_4",en:"Access detailed analytics and insights. Track casts, catches, missed baits, and more—all in one place. Enhance your strategy with precise data."},
+  {key:"onboarding_title_5",en:"Get Started"},
+  {key:"onboarding_description_5",en:"Let's get started! Sync your CatchClicker, connect with your team, and dive into data-driven fishing. Happy fishing with CatchClicker!"},
+  {key:"name_surname",en:"Name and surname"},
+  {key:"repeat_password",en:"Repeat Password"},
+  {key:"continue_text",en:"Continue"},
+  {key:"show_password",en:"Show password"},
+  {key:"hide_password",en:"Hide password"},
+  {key:"open_drawer",en:"Open drawer"},
+  {key:"requests",en:"Requests"},
+  {key:"history",en:"History"},
+  {key:"account_and_agreement",en:"Account And Agreement"},
+  {key:"support",en:"FAQ & Support"},
+  {key:"sign_out",en:"Sign Out"},
+  {key:"catch_clicker",en:"#CatchClicker"},
+  {key:"new_team",en:"New Team"},
+  {key:"add_new_team",en:"Add new team"},
+  {key:"your_catch_clicker",en:"Your #CatchClicker"},
+  {key:"profile_image",en:"Profile Image"},
+  {key:"more_options",en:"More Options"},
+  {key:"connected",en:"Connected"},
+  {key:"bluetooth_icon",en:"Bluetooth Icon"},
+  {key:"start_my_session",en:"Start my session"},
+  {key:"live_chart_icon",en:"Live Chart Icon"},
+  {key:"bluetooth_connected",en:"Connected"},
+  {key:"bluetooth_disconnected",en:"Connect"},
+  {key:"bluetooth_connecting",en:"Connecting"},
+  {key:"bluetooth_bounding",en:"Requires pairing"},
+  {key:"live_chart",en:"Live Chart"},
+  {key:"cancel",en:"Cancel"},
+  {key:"update_installing",en:"Update Installing ..."},
+  {key:"firmware_installed_successfully",en:"Firmware installed successfully"},
+  {key:"please_dont_switch_off_app",en:"Please, don't switch off app"},
+  {key:"software_update_warning_first_line",en:"We are installing firmware on "},
+  {key:"software_update_warning_second_line",en:"'s CatchClicker Device might restart several times ..."},
+  {key:"dBm",en:"dBm"},
+  {key:"not_connected_title",en:"Not Connected"},
+  {key:"not_connected_message",en:"Looks like this is your first time connecting your phone to #CatchClicker device"},
+  {key:"enable_bluetooth_title",en:"Enable Bluetooth on mobile first"},
+  {key:"enable_bluetooth_message",en:"Ensure Bluetooth is enabled on your phone. Go to your phone's settings and toggle Bluetooth on."},
+  {key:"enable_location_title",en:"Enable Location on mobile first"},
+  {key:"enable_location_message",en:"Ensure Location is enabled on your phone. Go to your phone's settings and toggle Location on."},
+  {key:"turn_on_device_title",en:"Turn On Device"},
+  {key:"turn_on_device_message",en:"Press the Power ON button once on #CatchClicker device"},
+  {key:"select_device_title",en:"Select Device"},
+  {key:"select_device_message",en:"Select your #CatchClicker from the list"},
+  {key:"get_code_title",en:"Get Code"},
+  {key:"get_code_message",en:"Press and hold Bluetooth button for 1 second on #CatchClicker device"},
+  {key:"enter_code_title",en:"Enter Code"},
+  {key:"enter_code_message",en:"Enter the code shown on #CatchClicker device"},
+  {key:"see_how",en:"See How"},
+  {key:"shop",en:"Shop"},
+  {key:"back",en:"Back"},
+  {key:"next",en:"Next"},
+  {key:"okay",en:"Okay"},
+  {key:"done",en:"Done"},
+  {key:"how_to_connect_to_catchclicker",en:"How to connect CatchClicker"},
+  {key:"notes",en:"Notes"},
+  {key:"edit_note",en:"Edit Note"},
+  {key:"delete_note",en:"Delete Note"},
+  {key:"see_more",en:"See more"},
+  {key:"see_less",en:"See Less"},
+  {key:"new_note",en:"New Note"},
+  {key:"publish",en:"Publish"},
+  {key:"take_a_note",en:"Take a note"},
+  {key:"edit_title",en:"Edit Title"},
+  {key:"remove_history",en:"Remove History"},
+  {key:"change",en:"Change"},
+  {key:"enter_a_new_title_in_the_field_below",en:"Enter a new title in the field below"},
+  {key:"session_title",en:"Session Title"},
+  {key:"selected",en:"Selected"},
+  {key:"select_all",en:"Select All"},
+  {key:"no_notes_yet",en:"No Notes Yet"},
+  {key:"start_tracking_your_fishing_trips_add_notes_photos_and_details",en:"Start tracking your fishing trips - add notes, photos, and details."},
+  {key:"my_trash",en:"My Trash"},
+  {key:"teams",en:"Teams"},
+  {key:"trash",en:"Trash"},
+  {key:"restore",en:"Restore"},
+  {key:"items",en:"items?"},
+  {key:"delete",en:"Delete"},
+  {key:"are_you_sure_you_want_to_delete_forever",en:"Are you sure you want to Delete forever %1$d items?"},
+  {key:"delete_forever",en:"Delete forever"},
+  {key:"delete_items",en:"Delete %1$d items"},
+  {key:"restore_items",en:"Restore %1$d items"},
+  {key:"send_clicks",en:"Send Clicks"},
+  {key:"stop_sending",en:"Stop Sending"},
+  {key:"confirm_start_sending_clicks",en:"Do you want to start sending clicks?"},
+  {key:"confirm_start_sending_clicks_session_started",en:"Session started for %1$s. Do you want to send your data?"},
+  {key:"confirm_start_sending_clicks_session_started_generic",en:"Session started. Do you want to send your data?"},
+  {key:"confirm_stop_sending_clicks",en:"Are you sure you want to stop sending clicks?"},
+  {key:"yes",en:"Yes"},
+  {key:"no",en:"No"},
+  {key:"new_update_is_available",en:"New Update is available"},
+  {key:"force_update_desc",en:"The current version of this application is no longer supported. We apologize for any inconvenience we may have caused you."},
+  {key:"update_now",en:"Update now"},
+  {key:"temporarily_free_access",en:"This version of the app is free"},
+  {key:"app_free_message",en:"Enjoy this version of the app completely free. Future updates may introduce subscription options."},
+  {key:"continue_free",en:"Okay"},
+  {key:"no_internet_connection",en:"No internet connection"},
+  {key:"something_unexpected_happened",en:"Something unexpected happened"},
+  {key:"error_happened_during_mapping",en:"Error happened during mapping"},
+  {key:"ble_error",en:"BLE Error"},
+  {key:"disconnected_from_catchclicker",en:"Disconnected from CatchClicker"},
+  {key:"new_team_created",en:"New team created"},
+  {key:"connected_to_catchclicker",en:"Connected to CatchClicker"},
+  {key:"received_events",en:"Received %1$d events"},
+  {key:"please_try_again_later",en:"Please try again later"},
+  {key:"session_started",en:"Session Started"},
+  {key:"team_session_started_successfully",en:"%1$s session started successfully"},
+  {key:"cannot_edit_team_while_session_is_running",en:"Cannot edit team while session is running"},
+  {key:"error_when_loading_requests",en:"Error when loading requests"},
+  {key:"error_during_team_creation",en:"Error during team creation"},
+  {key:"error_joining_team",en:"Error joining team"},
+  {key:"successfully_sent_join_request",en:"Successfully sent join request"},
+  {key:"something_went_wrong",en:"Something went wrong"},
+  {key:"firmware_update_available",en:"Firmware update available"},
+  {key:"tap_to_open_settings",en:"Tap to open settings"},
+  {key:"location_permission_is_denied",en:"Location permission is denied"},
+  {key:"location_permission_denied_description",en:"You will not be able to see fishing spots on the map or in history."},
+  {key:"error_please_try_again",en:"Error, please try again"},
+  {key:"unknown_error_please_try_again_later",en:"Unknown error, please try again later"},
+  {key:"invalid_username_or_password",en:"Invalid username or password"},
+  {key:"error_when_trying_to_login_user_is_null",en:"Error when trying to login: user is null"},
+  {key:"password_and_login_should_not_be_empty",en:"Password and login should not be empty"},
+  {key:"password_reset_title",en:"Password Reset"},
+  {key:"profile_picture_title",en:"Profile picture"},
+  {key:"picture_updated",en:"Picture updated"},
+  {key:"info_updated",en:"Info updated"},
+  {key:"profile_deleted",en:"Profile deleted"},
+  {key:"expires_today",en:"Expires today"},
+  {key:"expires_tomorrow",en:"Expires tomorrow"},
+  {key:"expires_in_days",en:"Expires in %1$d days"},
+  {key:"expires_on_date",en:"Expires on %1$s"},
+  {key:"expired",en:"Expired"},
+  {key:"team_to_join_label",en:"Team to join: "},
+  {key:"requested_by_label",en:"Requested by: "},
+  {key:"decline",en:"Decline"},
+  {key:"accept",en:"Accept"},
+  {key:"decline_join_request_confirmation",en:"Are you sure you want to decline this request to join your team?"},
+  {key:"edit_membership_status",en:"Edit membership status"},
+  {key:"admin_can_edit_team_and_manage_sessions",en:"Admin - can edit team and manage sessions"},
+  {key:"save",en:"Save"},
+  {key:"angler",en:"Angler"},
+  {key:"viewer",en:"Viewer"},
+  {key:"stopwatch",en:"Stopwatch"},
+  {key:"timer",en:"Timer"},
+  {key:"minutes",en:"Minutes"},
+  {key:"seconds",en:"Seconds"},
+  {key:"error_with_message",en:"Error: %1$s"},
+  {key:"unable_to_load_teams_try_again_later",en:"Unable to load teams, try again later."},
+  {key:"no_teams_to_show_here",en:"No teams to show here"},
+  {key:"join_requests",en:"Join requests"},
+  {key:"sent_requests",en:"Sent requests"},
+  {key:"no_requests_yet",en:"No requests yet"},
+  {key:"no_sent_requests_yet",en:"No sent requests yet"},
+  {key:"finish_session",en:"Finish Session"},
+  {key:"history_recording_stops_when_session_ends",en:"History recording stops when the session ends."},
+  {key:"finish",en:"Finish"},
+  {key:"stop",en:"Stop"},
+  {key:"session_started_label",en:"Session Started: "},
+  {key:"disconnect_question",en:"Disconnect?"},
+  {key:"disconnect_from_device",en:"Are you sure you want to disconnect from %1$s?"},
+  {key:"disconnect",en:"Disconnect"},
+  {key:"back_to_live",en:"Back to LIVE"},
+  {key:"unknown_device",en:"Unknown Device"},
+  {key:"cloud_storage",en:"Cloud Storage"},
+  {key:"cloud",en:"Cloud"},
+  {key:"device_storage",en:"Device Storage"},
+  {key:"device",en:"Device"},
+  {key:"your_location",en:"Your location"},
+  {key:"total",en:"Total"},
+  {key:"zoom_30_seconds_short",en:"30 sec"},
+  {key:"zoom_30_seconds",en:"30 seconds"},
+  {key:"zoom_1_minute_short",en:"1 min"},
+  {key:"zoom_1_minute",en:"1 minute"},
+  {key:"zoom_5_minutes_short",en:"5 min"},
+  {key:"zoom_5_minutes",en:"5 minutes"},
+  {key:"zoom_15_minutes_short",en:"15 min"},
+  {key:"zoom_15_minutes",en:"15 minutes"},
+  {key:"zoom_30_minutes_short",en:"30 min"},
+  {key:"zoom_30_minutes",en:"30 minutes"},
+  {key:"zoom_1_hour_short",en:"1 hour"},
+  {key:"zoom_1_hour",en:"1 hour"},
+  {key:"zoom_5_hours_short",en:"5 hour"},
+  {key:"zoom_5_hours",en:"5 hours"},
+  {key:"loading_ellipsis",en:"Loading..."},
+  {key:"bluetooth_devices",en:"Bluetooth Devices"},
+  {key:"connecting_ellipsis",en:"Connecting..."},
+  {key:"start_scanning",en:"Start Scanning"},
+  {key:"stop_scanning",en:"Stop Scanning"},
+  {key:"bluetooth_settings_check_description",en:"Please wait while we check your Bluetooth settings."},
+  {key:"bluetooth_required",en:"Bluetooth is required"},
+  {key:"bluetooth_required_description",en:"Please allow app to use bluetooth in settings to connect with the clicker."},
+  {key:"bluetooth_is_off",en:"Bluetooth is off"},
+  {key:"bluetooth_is_off_description",en:"Please turn on Bluetooth in your device settings to connect with the clicker."},
+  {key:"location_permission_title",en:"Location permission"},
+  {key:"location_permission_scan_description",en:"Please grant location permission to scan for nearby Bluetooth devices."},
+  {key:"bluetooth_error",en:"Bluetooth Error"},
+  {key:"settings",en:"#Settings"},
+  {key:"language",en:"Language"},
+  {key:"english",en:"English"},
+  {key:"georgian",en:"ქართული"},
+  {key:"name",en:"Name"},
+  {key:"type_device_name_here",en:"Type device name here"},
+  {key:"timer_mode",en:"Timer mode"},
+  {key:"mute_catchclicker",en:"Mute #CatchClicker"},
+  {key:"no_device_connected_change_settings",en:"No device connected. Please connect to device to change settings."},
+  {key:"connecting",en:"Connecting"},
+  {key:"dev_settings",en:"Dev settings"},
+  {key:"delay_between_reconnects",en:"Delay between reconnects"},
+  {key:"attempt_counts",en:"Attempt counts"},
+  {key:"firmware",en:"Firmware"},
+  {key:"device_update_error",en:"Something went wrong. Please try again later."},
+  {key:"your_device_is_up_to_date",en:"Your Device is up to date"},
+  {key:"version_format",en:"Version %1$s"},
+  {key:"current_version_format",en:"Current version: v%1$s"},
+  {key:"update_to_version_format",en:"Update to v%1$s"},
+  {key:"create_team",en:"Create Team"},
+  {key:"team_picture",en:"Team picture"},
+  {key:"team_name",en:"Team Name"},
+  {key:"create",en:"Create"},
+  {key:"team_name_too_short",en:"Team name must be more than 3 characters"},
+  {key:"join_team",en:"Join Team"},
+  {key:"team_id",en:"Team ID"},
+  {key:"join",en:"Join"},
+  {key:"team_id_too_short",en:"Team ID is too short"},
+  {key:"email_verification",en:"Email Verification"},
+  {key:"enter_valid_email_associated_with_account",en:"Please enter a valid email associated with your account"},
+  {key:"invalid_email",en:"Invalid email"},
+  {key:"enter_new_password",en:"Enter New Password"},
+  {key:"password_requirements_description",en:"Password must be 8+ characters with letters, numbers, and a special character."},
+  {key:"password_validation_error",en:"Lowercase and uppercase letters with numbers or special characters. Min 8 characters"},
+  {key:"passwords_do_not_match",en:"Passwords don't match"},
+  {key:"name_must_be_at_least_3_characters",en:"Name must be at least 3 characters"},
+  {key:"please_enter_a_valid_email_address",en:"Please enter a valid email address"},
+  {key:"sign_up_password_validation_error",en:"Use at least 8 characters including uppercase and lowercase letters with numbers or special characters"},
+  {key:"enter_code",en:"Enter code"},
+  {key:"enter_the_6_digit_code_resent_to",en:"Enter the 6-digit code resent to"},
+  {key:"time_out_or_invalid_code_entered",en:"Time out or invalid code entered,"},
+  {key:"resend",en:"Resend"},
+  {key:"verify",en:"Verify"},
+  {key:"successful_verification",en:"Successful verification"},
+  {key:"ready_to_sign_in_to_the_system",en:"You are ready to sign in to the system"},
+  {key:"profile",en:"Profile"},
+  {key:"reset_password",en:"Reset Password"},
+  {key:"edit_profile",en:"Edit Profile"},
+  {key:"delete_account",en:"Delete Account"},
+  {key:"username",en:"Username"},
+  {key:"username_validation_error",en:"Only letters, numbers, and spaces, min 3 characters."},
+  {key:"delete_your_account_question",en:"Delete your account?"},
+  {key:"all_data_permanently_lost",en:"All data will be permanently lost."},
+  {key:"current_username",en:"Current Username"},
+  {key:"enter_username_to_confirm",en:"Enter your username to confirm."},
+  {key:"username_is_not_correct",en:"Username is not correct"},
+  {key:"my_history",en:"My history"},
+  {key:"something_went_wrong_please_try_again_later",en:"Something went wrong. Please try again later"},
+  {key:"no_team_history_to_show",en:"No team history to show"},
+  {key:"no_sessions_found",en:"No sessions found"},
+  {key:"session_not_started",en:"Session not started"},
+  {key:"started_label",en:"Started: "},
+  {key:"ended_label",en:"Ended: "},
+  {key:"you",en:"You"},
+  {key:"start",en:"Start"},
+  {key:"chart",en:"Chart"},
+  {key:"close",en:"Close"},
+  {key:"start_session",en:"Start Session"},
+  {key:"start_individual_session_description",en:"Start your individual session"},
+  {key:"start_team_session_description",en:"Start a team session or simply view live activities. Only anglers sending clicks to the team will appear."},
+  {key:"history_recording_starts_with_session_and_stops_when_session_ends",en:"History recording starts with the session and stops when the session ends."},
+  {key:"settings_catchclicker",en:"Settings #CatchClicker"},
+  {key:"update_available",en:"Update available"},
+  {key:"guest",en:"Guest"},
+  {key:"unknown",en:"Unknown"},
+  {key:"sign_out_confirmation",en:"Are you sure you want to sign out from the app?"},
+  {key:"catchclicker_brand",en:"CatchClicker"},
+  {key:"admin_label",en:"Admin: %1$s"},
+  {key:"edit_team",en:"Edit Team"},
+  {key:"copy_team_id",en:"Copy Team ID"},
+  {key:"remove_team",en:"Remove Team"},
+  {key:"team_info",en:"Team Info"},
+  {key:"leave_team",en:"Leave Team"},
+  {key:"remove",en:"Remove"},
+  {key:"remove_team_question",en:"Remove %1$s?"},
+  {key:"remove_team_confirmation",en:"Are you sure you want to permanently remove %1$s?"},
+  {key:"leave_team_question",en:"Leave %1$s?"},
+  {key:"leave_team_confirmation",en:"Are you sure you want to leave the team? Once you leave, you'll lose access to team data and collaboration."},
+  {key:"new_team_description",en:"Create your own team or join an existing one using the code provided by a team."},
+  {key:"admins",en:"Admins"},
+  {key:"anglers",en:"Anglers"},
+  {key:"view_only",en:"View Only"},
+  {key:"edit_status",en:"Edit status"},
+  {key:"remove_member",en:"Remove member"},
+  {key:"remove_member_confirmation",en:"Are you sure you want to remove %1$s from %2$s?"},
+  {key:"sending_clicks_label",en:"Sending Clicks:"},
+  {key:"catchclicker_logo",en:"CatchClicker logo"},
+  {key:"selected_count",en:"%1$d selected"},
+  {key:"no_team_trash_to_show",en:"No team trash to show"},
+  {key:"my_teams",en:"My teams"},
+  {key:"c1_label",en:"C1"},
+  {key:"c2_label",en:"C2"},
+  {key:"try_label",en:"TRY"},
+];
+
+// ── STATE ──
+const state = { translations: {}, skipped: new Set(), filter: 'all' };
+let cfg = {};
+
+function startTranslating() {
+  const name = document.getElementById('translatorName').value.trim();
+  const lang = document.getElementById('targetLang').value;
+  const url  = document.getElementById('sheetUrl').value.trim();
+  if (!name) return showToast('Enter your name', 'error');
+  if (!lang) return showToast('Select a language', 'error');
+  if (!url)  return showToast('Enter the Apps Script URL', 'error');
+  cfg = { name, lang, url };
+  document.getElementById('setupPanel').style.display = 'none';
+  document.getElementById('mainArea').style.display = 'block';
+  document.getElementById('submitBar').style.display = 'flex';
+  renderCards();
+  updateCounts();
+}
+
+function setFilter(f, btn) {
+  state.filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function renderCards() {
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
+  STRINGS.forEach(s => {
+    const isDone    = !!state.translations[s.key];
+    const isSkipped = state.skipped.has(s.key);
+    if (state.filter === 'done'    && !isDone)    return;
+    if (state.filter === 'pending' && isDone)     return;
+    if (search && !s.key.includes(search) && !s.en.toLowerCase().includes(search)) return;
+
+    const card = document.createElement('div');
+    card.className = `string-card${isDone ? ' done' : ''}${isSkipped ? ' skipped' : ''}`;
+    card.dataset.key = s.key;
+
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="col-key">
+          <div class="key-name">${s.key}</div>
+          <div class="key-english">${escHtml(s.en)}</div>
+        </div>
+        <div class="col-input">
+          <input type="text"
+            placeholder="Type ${cfg.lang} translation…"
+            value="${escHtml(state.translations[s.key] || '')}"
+            data-key="${s.key}"
+            onchange="onTranslate(this)"
+            oninput="onTranslate(this)"
+          >
+        </div>
+        <div class="col-action">
+          ${isDone
+            ? `<div class="check-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7L5.5 10L11.5 4" stroke="#ADD144" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+            : `<button class="btn-skip" onclick="skipKey('${s.key}')">Skip</button>`
+          }
+        </div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function onTranslate(input) {
+  const key = input.dataset.key;
+  const val = input.value.trim();
+  if (val) {
+    state.translations[key] = val;
+    state.skipped.delete(key);
+  } else {
+    delete state.translations[key];
+  }
+  const card = input.closest('.string-card');
+  if (val) { card.classList.add('done'); card.classList.remove('skipped'); }
+  else { card.classList.remove('done'); }
+  updateCounts();
+}
+
+function skipKey(key) {
+  state.skipped.add(key);
+  delete state.translations[key];
+  const card = document.querySelector(`.string-card[data-key="${key}"]`);
+  if (card) card.classList.add('skipped');
+  updateCounts();
+}
+
+function updateCounts() {
+  const done    = Object.keys(state.translations).length;
+  const total   = STRINGS.length;
+  const pending = total - done - state.skipped.size;
+  document.getElementById('doneCount').textContent    = done;
+  document.getElementById('pendingCount').textContent = pending;
+  document.getElementById('countAll').textContent     = total;
+  document.getElementById('countDone').textContent    = done;
+  document.getElementById('countPending').textContent = pending + state.skipped.size;
+
+  const pct = Math.round((done / total) * 100);
+  let bar = document.querySelector('.progress-bar-fill');
+  if (!bar) {
+    const wrap = document.createElement('div');
+    wrap.className = 'progress-bar-wrap';
+    wrap.style.margin = '20px 24px 0';
+    wrap.innerHTML = `<div class="progress-bar-fill" style="width:0%"></div>`;
+    document.querySelector('.filter-bar')?.before(wrap);
+    bar = wrap.querySelector('.progress-bar-fill');
+  }
+  bar.style.width = pct + '%';
+}
+
+async function submitAll() {
+  const entries = Object.entries(state.translations);
+  if (!entries.length) return showToast('Nothing to submit yet', 'error');
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const rows = entries.map(([key, translation]) => ({
+    key,
+    english: STRINGS.find(s => s.key === key)?.en || '',
+    language: cfg.lang,
+    translation,
+    translator: cfg.name,
+    timestamp: new Date().toISOString()
+  }));
+
+  try {
+    await fetch(cfg.url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rows })
+    });
+    showToast(`✓ ${rows.length} translations submitted!`, 'success');
+    btn.textContent = 'Submitted ✓';
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'Submit to Google Sheets'; }, 3000);
+  } catch(e) {
+    showToast('Submit failed. Check the URL.', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit to Google Sheets';
+  }
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
