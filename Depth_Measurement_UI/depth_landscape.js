@@ -547,29 +547,7 @@ function renderChart(mode, prevPts) {
   const xM = xMax(pts.map((p) => p.dist));
   const yn = getYSpec(pts);
   applyEqualViewport(xM, yn);
-  if (typeof Chart === "undefined") {
-    drawFallbackChart(data, xM, yn);
-    return;
-  }
-  if (mode === "add" && prevPts && prevPts.length + 1 === pts.length) {
-    const oldYn = getYSpec(prevPts);
-    applyEqualViewport(xM, oldYn);
-    const oldData = toChartData(prevPts);
-    const last = pts[pts.length - 1];
-    const dropFromTop = [...oldData, { x: last.dist, y: 0 }];
-    const dropToTarget = [...oldData, { x: last.dist, y: +(last.sink / 1000).toFixed(2) }];
-    setChartState(dropFromTop, xM, oldYn, { duration: 0 });
-    setChartState(dropToTarget, xM, oldYn, {
-      duration: 800,
-      easing: "easeOutCubic",
-      onComplete: () => {
-        applyEqualViewport(xM, yn);
-        setChartState(data, xM, yn, { duration: 320, easing: "easeOutCubic" });
-      },
-    });
-    return;
-  }
-  setChartState(data, xM, yn, { duration: 200, easing: "easeOutCubic" });
+  drawFallbackChart(data, xM, yn);
 }
 function renderList() {
   const a = [...pts.map((p, i) => ({ ...p, oi: i }))].reverse();
@@ -620,8 +598,7 @@ function initDistanceInputBehavior() {
   din.addEventListener("click", selectAll);
 }
 function chartPointIndexFromEvent(event) {
-  if (typeof Chart === "undefined") return fallbackPointIndexFromEvent(event);
-  if (!chart) return null;
+  if (!chart) return fallbackPointIndexFromEvent(event);
   const hits = chart.getElementsAtEventForMode(event, "nearest", { intersect: true }, false);
   if (!hits.length) return null;
   const raw = chart.data.datasets[hits[0].datasetIndex].data[hits[0].index];
