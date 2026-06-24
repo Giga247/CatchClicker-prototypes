@@ -385,6 +385,101 @@ function renderAll(mode, prevPts) {
   renderChart(mode, prevPts);
   renderList();
 }
+function getFallbackChartGeometry(canvas, xM, yn) {
+  const rect = canvas.getBoundingClientRect();
+  const width = rect.width || canvas.clientWidth || 320;
+  const height = rect.height || canvas.clientHeight || 240;
+  const pad = { left: 42, right: 12, top: 10, bottom: 34 };
+  const plotW = Math.max(1, width - pad.left - pad.right);
+  const plotH = Math.max(1, height - pad.top - pad.bottom);
+  const xToPx = (x) => pad.left + (x / Math.max(xM, 1)) * plotW;
+  const yToPx = (y) => pad.top + (y / Math.max(yn.max, 1)) * plotH;
+  return { width, height, pad, plotW, plotH, xToPx, yToPx };
+}
+function drawFallbackChart(data, xM, yn) {
+  const canvas = document.getElementById("c");
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const g = getFallbackChartGeometry(canvas, xM, yn);
+  canvas.width = Math.round(g.width * dpr);
+  canvas.height = Math.round(g.height * dpr);
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, g.width, g.height);
+  ctx.font = "10px Jost, system-ui, sans-serif";
+  ctx.lineWidth = 1;
+  ctx.textBaseline = "middle";
+
+  const gridColor = "rgba(169,162,164,0.18)";
+  const textColor = "#A9A2A4";
+  ctx.strokeStyle = gridColor;
+  ctx.fillStyle = textColor;
+
+  for (let x = 0; x <= xM; x += 10) {
+    const px = g.xToPx(x);
+    ctx.beginPath();
+    ctx.moveTo(px, g.pad.top);
+    ctx.lineTo(px, g.pad.top + g.plotH);
+    ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.fillText(String(x), px, g.pad.top + g.plotH + 16);
+  }
+
+  for (let y = 0; y <= yn.max; y += yn.step) {
+    const py = g.yToPx(y);
+    ctx.beginPath();
+    ctx.moveTo(g.pad.left, py);
+    ctx.lineTo(g.pad.left + g.plotW, py);
+    ctx.stroke();
+    ctx.textAlign = "right";
+    ctx.fillText(String(y), g.pad.left - 8, py);
+  }
+
+  ctx.textAlign = "center";
+  ctx.fillText("Distance [m]", g.pad.left + g.plotW / 2, g.height - 9);
+  ctx.save();
+  ctx.translate(13, g.pad.top + g.plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText("Sink time [s]", 0, 0);
+  ctx.restore();
+
+  data.forEach((point) => {
+    const px = g.xToPx(point.x);
+    const py = g.yToPx(point.y);
+    const selected = selectedPoints.has(point.index);
+    ctx.beginPath();
+    ctx.arc(px, py, selected ? 7 : 5, 0, Math.PI * 2);
+    ctx.fillStyle = POINT_COLORS[point.color || "green"];
+    ctx.fill();
+    if (selected) {
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.stroke();
+    }
+  });
+}
+function fallbackPointIndexFromEvent(event) {
+  const canvas = document.getElementById("c");
+  if (!canvas || !pts.length) return null;
+  const rect = canvas.getBoundingClientRect();
+  const xM = xMax(pts.map((p) => p.dist));
+  const yn = getYSpec(pts);
+  const g = getFallbackChartGeometry(canvas, xM, yn);
+  const cx = event.clientX - rect.left;
+  const cy = event.clientY - rect.top;
+  let best = null;
+  let bestDistance = 13;
+  toChartData(pts).forEach((point) => {
+    const dx = cx - g.xToPx(point.x);
+    const dy = cy - g.yToPx(point.y);
+    const distance = Math.hypot(dx, dy);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = point.index;
+    }
+  });
+  return best;
+}
 function setChartState(data, xM, yn, anim) {
   if (!chart) {
     chart = new Chart(document.getElementById("c"), {
@@ -452,6 +547,10 @@ function renderChart(mode, prevPts) {
   const xM = xMax(pts.map((p) => p.dist));
   const yn = getYSpec(pts);
   applyEqualViewport(xM, yn);
+  if (typeof Chart === "undefined") {
+    drawFallbackChart(data, xM, yn);
+    return;
+  }
   if (mode === "add" && prevPts && prevPts.length + 1 === pts.length) {
     const oldYn = getYSpec(prevPts);
     applyEqualViewport(xM, oldYn);
@@ -521,6 +620,7 @@ function initDistanceInputBehavior() {
   din.addEventListener("click", selectAll);
 }
 function chartPointIndexFromEvent(event) {
+  if (typeof Chart === "undefined") return fallbackPointIndexFromEvent(event);
   if (!chart) return null;
   const hits = chart.getElementsAtEventForMode(event, "nearest", { intersect: true }, false);
   if (!hits.length) return null;
