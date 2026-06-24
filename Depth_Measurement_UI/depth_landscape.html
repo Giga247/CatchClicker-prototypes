@@ -1,93 +1,111 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>CatchClicker - Depth Mode (Landscape)</title>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="depth_landscape.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
-<div class="phone">
-  <div class="meta-card page-meta">
-    <label class="meta-field">
-      <span class="meta-label">Chart</span>
-      <input id="chart-name" class="meta-input" type="text" value="Depth Session A">
-    </label>
-    <label class="meta-field">
-      <span class="meta-label">Time</span>
-      <input id="chart-time" class="meta-input" type="datetime-local">
-    </label>
-    <label class="meta-field">
-      <span class="meta-label">Location</span>
-      <input id="chart-location" class="meta-input" type="text" value="Lake Spot 1">
-    </label>
-    <button class="panel-btn meta-panel-btn" id="bpanel" onclick="toggleLeftPanel()" title="Hide left panel">◧</button>
-  </div>
-
-  <div class="main-grid">
-    <div class="left">
-      <div class="topbar">
-        <div class="brand">#<span>CatchClicker</span> Depth</div>
-        <button class="cbtn" id="cbtn" onclick="toggleConnect()">
-          <span class="dot"></span><span id="clbl">Connect</span>
-        </button>
-      </div>
-
-      <div class="row-ss">
-        <button id="bst" class="btn-main btn-start" onclick="startSW()">Start</button>
-        <button id="bsp" class="btn-main btn-stop" onclick="stopSW()" disabled>Stop</button>
-      </div>
-
-      <div class="sink-card">
-        <div class="card-label">Sink Time</div>
-        <div class="seg-row" id="seg-disp"></div>
-        <div class="sub-row" id="sub-row"></div>
-      </div>
-
-      <div class="row-dp">
-        <div class="dist-card">
-          <div class="dist-label">Distance</div>
-          <input class="dinp" id="din" type="number" min="1" max="300" value="50">
-          <div class="dist-unit">Metres</div>
-        </div>
-        <button class="save-btn" id="bsave" onclick="plotPoint()">
-          <span class="save-plus">+</span>
-          <span class="save-label">Save</span>
-        </button>
-      </div>
+<div class="device-shell device-landscape">
+<div class="phone" id="phone">
+  <aside class="control-rail" aria-label="Measurement controls">
+    <div class="top-actions">
+      <button class="hit back-hit" aria-label="Back" onclick="handleBack()"></button>
+      <button class="hit connect-hit" id="cbtn" onclick="toggleConnect()" aria-label="Connection status">
+        <span id="clbl">Connect</span>
+      </button>
+      <button class="hit page-save-hit" id="page-save" onclick="saveSession()" aria-label="Save chart"></button>
     </div>
 
-    <div class="right">
-      <div class="chart-top">
-        <span class="chart-lbl">Distance vs Sink Time</span>
-        <div class="chart-right-row">
-          <div class="lw" id="lw">
-            <div class="ltog" onclick="toggleList()">
-              <div class="ltl"><span class="llbl">Measurements</span><span class="badge" id="lb">0 pts</span></div>
-              <div class="ltr"><button class="bclr" onclick="clearAll(event)">Clear</button><span class="arr" id="la">v</span></div>
-            </div>
-            <div class="lbody" id="lbody">
-              <div class="lcols"><span class="ch">#</span><span class="ch">Dist</span><span class="ch">Sink</span><span></span></div>
-              <div id="lr"></div>
-            </div>
-          </div>
-          <span class="chart-pts" id="pc">0 pts</span>
-          <button class="b-undo" id="bundo" onclick="undoLast()" aria-label="Undo">↶</button>
-          <button class="b-undo" id="bredo" onclick="redoLast()" aria-label="Redo">↷</button>
-        </div>
+    <section class="meta-panel">
+      <label class="title-hit">
+        <textarea id="chart-name" class="ghost-input" aria-label="Chart name">Depth Chart Title</textarea>
+      </label>
+      <div class="meta-status-row">
+        <span class="cloud-item"><i></i>Cloud</span>
+        <span class="device-item"><i></i>Device</span>
       </div>
-      <div class="cw" id="cw">
-        <div class="plot-frame" id="plot-frame">
-          <canvas id="c"></canvas>
-        </div>
-        <div class="y-mode y-mode-bottom">
+      <span class="meta-menu-dots">•••</span>
+      <span class="meta-check"></span>
+      <span class="date-glyph"></span>
+      <span class="location-glyph"></span>
+      <label class="date-hit">
+        <input id="chart-time" class="ghost-input" type="text" value="10 September, 2024" aria-label="Chart date">
+      </label>
+      <label class="location-hit">
+        <textarea id="chart-location" class="ghost-input" aria-label="Location">Tsalka, Georgia</textarea>
+      </label>
+    </section>
+
+    <section class="measure-live">
+      <div class="measure-top">
+        <label class="distance-field">
+          <span>Distance [m]</span>
+          <input class="dinp" id="din" type="text" value="50" inputmode="numeric" pattern="[0-9]*" maxlength="3">
+          <span class="dist-step-col">
+            <button class="dist-step" type="button" onclick="adjustDistance(2)" aria-label="Increase distance by 2">+</button>
+            <button class="dist-step" type="button" onclick="adjustDistance(-2)" aria-label="Decrease distance by 2">-</button>
+          </span>
+        </label>
+        <button class="save-btn" id="bsave" onclick="plotPoint()">Save</button>
+      </div>
+      <div class="timer-face" id="seg-disp">00:00:00</div>
+      <div class="sub-row" id="sub-row"></div>
+      <button id="btoggle" class="btn-main btn-toggle btn-start" onclick="toggleSW()">
+        <span id="toggle-label">Start</span>
+      </button>
+    </section>
+  </aside>
+
+  <main class="chart-pane">
+    <section class="chart-live" id="cw" aria-label="Interactive chart">
+      <div class="plot-frame" id="plot-frame">
+        <canvas id="c"></canvas>
+      </div>
+      <div class="chart-legend is-hidden" id="chart-legend" aria-hidden="true">
+        <button class="legend-color" type="button" data-color="green" onclick="applySelectedColor('green')" aria-label="Set selected points green">
+          <i class="grass-dot"></i>
+        </button>
+        <input class="legend-label" id="legend-green" type="text" value="Grass" aria-label="Green legend label">
+        <button class="legend-color" type="button" data-color="red" onclick="applySelectedColor('red')" aria-label="Set selected points red">
+          <i class="clear-dot"></i>
+        </button>
+        <input class="legend-label" id="legend-red" type="text" value="Clear" aria-label="Red legend label">
+      </div>
+      <div class="chart-controls">
+        <div class="y-mode" aria-label="Y axis scale controls">
           <button class="ymb active" data-mode="auto" onclick="setYAxisMode('auto',this)">Auto</button>
-          <button class="ymb" data-mode="equal" onclick="setYAxisMode('equal',this)">Y=X</button>
+          <button class="ymb" data-mode="equal" onclick="setYAxisMode('equal',this)">X=Y</button>
         </div>
+        <button class="points-pill" id="lw" onclick="toggleList()" aria-label="Open measurements">
+          <span id="lb">Points: 0</span>
+          <span id="la" aria-hidden="true"></span>
+        </button>
+        <button class="round-tool" id="bundo" onclick="undoLast()" aria-label="Undo">z</button>
+        <button class="round-tool" id="bredo" onclick="redoLast()" aria-label="Redo">r</button>
+      </div>
+      <span class="chart-pts" id="pc">0 pts</span>
+    </section>
+  </main>
+</div>
+</div>
+
+<div class="table-modal" id="table-modal" aria-hidden="true">
+  <div class="table-modal-backdrop" onclick="closeTableModal()"></div>
+  <div class="table-modal-sheet" role="dialog" aria-modal="true" aria-label="Measurements table">
+    <div class="table-modal-head">
+      <div class="table-modal-title">Measurements</div>
+      <div class="table-modal-actions">
+        <span class="chart-pts" id="modal-count">0 pts</span>
+        <button class="bclr" onclick="clearAll(event)">Clear</button>
+        <button class="b-undo" onclick="closeTableModal()" aria-label="Close">x</button>
       </div>
     </div>
+    <div class="lcols"><span class="ch">#</span><span class="ch">Dist</span><span class="ch">Sink</span><span></span></div>
+    <div class="table-modal-body" id="lr-modal"></div>
   </div>
 </div>
 

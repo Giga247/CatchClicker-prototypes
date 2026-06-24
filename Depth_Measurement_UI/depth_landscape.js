@@ -1,118 +1,87 @@
-const SEG_P = [
-  "M9.34 0.71c0,0-5.17,5.11-5.17,5.11-0.48,0.47-0.67,1.05-0.53,1.67 0.13,0.62 0.54,1.1 1.19,1.41 0,0 13.28,6.23 13.28,6.23 0.37,0.17 0.73,0.25 1.15,0.26 0,0 25.85,0.11 25.85,0.11 0.95,0 1.76-0.43 2.17-1.15 0,0 6.5-11.44 6.5-11.44 0.37-0.65 0.32-1.34-0.13-1.95-0.45-0.6-1.18-0.94-2.02-0.94 0,0-40.45-0.01-40.45-0.01c-0.73,0-1.35,0.24-1.82,0.71z",
-  "M64.95 10.61c0,0-2.8-5.63-2.8-5.63-0.36-0.74-1.15-1.2-2.1-1.23-0.95-0.03-1.78,0.37-2.22,1.08 0,0-8.92,14.42-8.92,14.42-0.19,0.3-0.27,0.59-0.27,0.93 0,0 0.01,26.58 0.01,26.58 0,0.79 0.5,1.47 1.34,1.81 0,0 9.13,3.74 9.13,3.74 0.92,0.38 1.98,0.24 2.71-0.37 0,0 2.56-2.1 2.56-2.1 0.48-0.39 0.73-0.88 0.73-1.45 0,0 0.01-37.02 0.01-37.02 0-0.28-0.06-0.52-0.19-0.78z",
-  "M64.98 105.4c0,0-2.8,5.63-2.8,5.63-0.37,0.74-1.16,1.2-2.1,1.24-0.95,0.03-1.78-0.37-2.22-1.08 0,0-8.92-14.42-8.92-14.42-0.19-0.3-0.27-0.59-0.27-0.93 0,0 0.01-26.58 0.01-26.58 0-0.79 0.5-1.47 1.34-1.81 0,0 9.13-3.75 9.13-3.75 0.92-0.38 1.98-0.23 2.71,0.37 0,0 2.56,2.1 2.56,2.1 0.48,0.39 0.72,0.88 0.72,1.44 0,0 0.01,37.02 0.01,37.02 0,0.28-0.06,0.52-0.19,0.78z",
-  "M9.37 115.3c0,0-5.17-5.11-5.17-5.11-0.48-0.48-0.66-1.05-0.53-1.67 0.13-0.62 0.54-1.1 1.19-1.41 0,0 13.28-6.23 13.28-6.23 0.37-0.17 0.73-0.25 1.15-0.26 0,0 25.84-0.11 25.84-0.11 0.95,0 1.76,0.43 2.17,1.15 0,0 6.49,11.44 6.49,11.44 0.37,0.64 0.32,1.34-0.13,1.95-0.45,0.61-1.18,0.95-2.02,0.95 0,0-40.45,0-40.45,0-0.73,0-1.35-0.24-1.82-0.71z",
-  "M3.55 103.85c0,0 11.79-5.35 11.79-5.35 0.8-0.36 1.26-1.01 1.26-1.78 0,0-0.01-26.98-0.01-26.98 0-0.75-0.45-1.4-1.23-1.76 0,0-8.94-4.17-8.94-4.17-0.98-0.45-2.16-0.29-2.91,0.4 0,0-2.76,2.53-2.76,2.53-0.42,0.39-0.63,0.84-0.63,1.36 0,0-0.09,33.96-0.09,33.96 0,0.73 0.42,1.36 1.16,1.73 0.74,0.38 1.6,0.39 2.36,0.05z",
-  "M3.52 12.16c0,0 11.79,5.35 11.79,5.35 0.8,0.36 1.26,1.02 1.26,1.78 0,0-0.01,26.97-0.01,26.97 0,0.75-0.45,1.4-1.24,1.77 0,0-8.93,4.16-8.93,4.16-0.98,0.45-2.16,0.29-2.91-0.4 0,0-2.76-2.53-2.76-2.53-0.42-0.39-0.63-0.84-0.63-1.36 0,0-0.09-33.96-0.09-33.96 0-0.73 0.42-1.36 1.16-1.73 0.74-0.38 1.6-0.39 2.36-0.04z",
-  "M18 50.83c0,0-11.47,5.02-11.47,5.02-0.81,0.35-1.29,1.02-1.29,1.79 0,0.77 0.47,1.44 1.29,1.79 0,0 11.04,4.86 11.04,4.86 0.36,0.16 0.7,0.23 1.11,0.23 0,0 28.27-0.01 28.27-0.01 0.39,0 0.72-0.07 1.07-0.21 0,0 11.3-4.77 11.3-4.77 0.83-0.35 1.32-1.02 1.32-1.8 0-0.78-0.48-1.45-1.31-1.81 0,0-11.89-5.1-11.89-5.1-0.35-0.15-0.69-0.22-1.08-0.22 0,0-27.25,0-27.25,0-0.4,0-0.75,0.07-1.1,0.23z",
-];
-const SEG_MAP = [
-  [1, 1, 1, 1, 1, 1, 0],
-  [0, 1, 1, 0, 0, 0, 0],
-  [1, 1, 0, 1, 1, 0, 1],
-  [1, 1, 1, 1, 0, 0, 1],
-  [0, 1, 1, 0, 0, 1, 1],
-  [1, 0, 1, 1, 0, 1, 1],
-  [1, 0, 1, 1, 1, 1, 1],
-  [1, 1, 1, 0, 0, 0, 0],
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 0, 1, 1],
-];
-const ON = "#FFFFFF",
-  OFF = "rgba(255,255,255,0.06)",
-  GLOW = "drop-shadow(0 0 3px rgba(255,255,255,0.85))";
-const H_BIG = 56,
-  H_SM = 36;
-const W_BIG = H_BIG * 0.5617,
-  W_SM = H_SM * 0.5617;
-const COL1_W = 18,
-  COL2_W = 12;
-function makeSVG(d, h) {
-  const w = h * 0.5617;
-  let p = "";
-  SEG_MAP[d].forEach((on, i) => {
-    p += `<path d="${SEG_P[i]}" fill="${on ? ON : OFF}"${on ? ` style="filter:${GLOW}"` : ""}/>`;
-  });
-  return `<svg viewBox="0 0 65.16 116.01" width="${w}" height="${h}" style="display:block">${p}</svg>`;
-}
-const CB = Array.from({ length: 10 }, (_, i) => makeSVG(i, H_BIG));
-const CS = Array.from({ length: 10 }, (_, i) => makeSVG(i, H_SM));
 function buildDisplay() {
-  const disp = document.getElementById("seg-disp"),
-    sub = document.getElementById("sub-row");
-  disp.innerHTML = "";
-  sub.innerHTML = "";
-  ["sm0", "sm1"].forEach((id) => {
-    const d = document.createElement("div");
-    d.id = id;
-    d.innerHTML = CB[0];
-    disp.appendChild(d);
-  });
-  const c1 = document.createElement("div");
-  c1.className = "seg-colon";
-  c1.style.cssText = `width:${COL1_W}px;gap:11px;padding-bottom:6px;`;
-  c1.innerHTML =
-    '<span class="sdot" style="width:6px;height:6px;"></span><span class="sdot" style="width:6px;height:6px;"></span>';
-  disp.appendChild(c1);
-  ["ss0", "ss1"].forEach((id) => {
-    const d = document.createElement("div");
-    d.id = id;
-    d.innerHTML = CB[0];
-    disp.appendChild(d);
-  });
-  const c2 = document.createElement("div");
-  c2.className = "seg-colon";
-  c2.style.cssText = `width:${COL2_W}px;gap:7px;padding-bottom:2px;`;
-  c2.innerHTML =
-    '<span class="sdot" style="width:4px;height:4px;"></span><span class="sdot" style="width:4px;height:4px;"></span>';
-  disp.appendChild(c2);
-  ["st0", "st1"].forEach((id) => {
-    const d = document.createElement("div");
-    d.id = id;
-    d.innerHTML = CS[0];
-    disp.appendChild(d);
-  });
-  [
-    { text: "MM", w: W_BIG * 2 + 2 },
-    { sep: ":", sw: COL1_W },
-    { text: "SS", w: W_BIG * 2 + 2 },
-    { sep: ":", sw: COL2_W },
-    { text: "tt", w: W_SM * 2 + 2 },
-  ].forEach((g) => {
-    const s = document.createElement("span");
-    if (g.sep) {
-      s.className = "sub-sep";
-      s.style.width = g.sw + "px";
-    } else {
-      s.className = "sub-cell";
-      s.style.width = g.w + "px";
-    }
-    s.textContent = g.sep || g.text;
-    sub.appendChild(s);
-  });
+  const disp = document.getElementById("seg-disp");
+  const sub = document.getElementById("sub-row");
+  if (disp) disp.textContent = "00:00:00";
+  if (sub) sub.innerHTML = "";
 }
-let prev = {},
-  t0 = null,
-  msEl = 0,
-  run = false,
-  iv = null;
+
+let prev = {};
+let t0 = null;
+let msEl = 0;
+let run = false;
+let iv = null;
 let yAxisMode = "auto";
-let leftOpen = true;
+let controlsOpen = true;
+let pts = [];
+let undo = [];
+let redo = [];
+let chart = null;
+let lo = false;
+let ei = null;
+let ef = null;
+let conn = false;
+let hasUnsavedChanges = false;
+let selectionMode = false;
+let selectedPoints = new Set();
+let longPressTimer = null;
+let longPressPointIndex = null;
+let suppressNextPointClick = false;
+const POINT_COLORS = { green: "#ADD144", red: "#EA523E" };
+const CHART_PLOT_TOP = 12;
+const CHART_PLOT_BOTTOM = 61;
+
 function refreshSaveState() {
   const b = document.getElementById("bsave");
   if (b) b.disabled = run || msEl <= 0;
+  updateStartPrompt();
 }
-function toggleLeftPanel() {
-  leftOpen = !leftOpen;
-  const phone = document.querySelector(".phone");
-  if (phone) phone.classList.toggle("left-collapsed", !leftOpen);
+function setDirty(isDirty = true) {
+  hasUnsavedChanges = isDirty;
+  const saveBtn = document.getElementById("page-save");
+  if (saveBtn) {
+    saveBtn.classList.toggle("clean", !hasUnsavedChanges);
+    saveBtn.setAttribute("aria-label", hasUnsavedChanges ? "Save chart changes" : "Saved");
+  }
+}
+function saveSession() {
+  setDirty(false);
+}
+function handleBack() {
+  if (hasUnsavedChanges && !confirm("You have unsaved changes. Leave without saving?")) return;
+  if (window.history.length > 1) window.history.back();
+}
+function updateStartPrompt() {
+  const hint = document.getElementById("start-hint");
+  const startBtn = document.getElementById("btoggle") || document.getElementById("bst");
+  const show = !run && msEl <= 0;
+  if (hint) hint.classList.toggle("hidden", !show);
+  if (startBtn) startBtn.classList.toggle("start-attn", show);
+}
+function adjustDistance(delta) {
+  const inp = document.getElementById("din");
+  if (!inp) return;
+  const min = 1;
+  const max = 300;
+  const cur = parseFloat(inp.value || "0") || min;
+  const next = Math.max(min, Math.min(max, Math.round(cur + delta)));
+  inp.value = String(next);
+  if (typeof inp.setSelectionRange === "function") {
+    const end = inp.value.length;
+    inp.setSelectionRange(end, end);
+  }
+  inp.blur();
+  setDirty();
+}
+function toggleControls() {
+  controlsOpen = !controlsOpen;
+  const phone = document.getElementById("phone");
+  if (phone) phone.classList.toggle("controls-collapsed", !controlsOpen);
   const btn = document.getElementById("bpanel");
   if (btn) {
-    btn.textContent = leftOpen ? "◧" : "◨";
-    btn.title = leftOpen ? "Hide left panel" : "Show left panel";
+    btn.textContent = controlsOpen ? "-" : "+";
+    btn.title = controlsOpen ? "Hide controls" : "Show controls";
   }
-  setTimeout(() => renderAll(), 300);
+  setTimeout(() => renderAll(), 280);
 }
 function setYAxisMode(mode, btn) {
   yAxisMode = mode;
@@ -123,49 +92,68 @@ function setYAxisMode(mode, btn) {
   renderAll();
 }
 function updateSeg(ms) {
-  const s = Math.floor(ms / 1000),
-    m = Math.floor(s / 60),
-    hh = Math.floor((ms % 1000) / 10);
-  const mm = String(m % 100).padStart(2, "0"),
-    ss = String(s % 60).padStart(2, "0"),
-    tt = String(hh).padStart(2, "0");
-  const vals = {
-    sm0: +mm[0],
-    sm1: +mm[1],
-    ss0: +ss[0],
-    ss1: +ss[1],
-    st0: +tt[0],
-    st1: +tt[1],
-  };
-  const caches = { sm0: CB, sm1: CB, ss0: CB, ss1: CB, st0: CS, st1: CS };
-  for (const k in vals) {
-    if (vals[k] !== prev[k]) {
-      document.getElementById(k).innerHTML = caches[k][vals[k]];
-      prev[k] = vals[k];
-    }
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const hh = Math.floor((ms % 1000) / 10);
+  const mm = String(m % 100).padStart(2, "0");
+  const ss = String(s % 60).padStart(2, "0");
+  const tt = String(hh).padStart(2, "0");
+  const disp = document.getElementById("seg-disp");
+  if (disp) disp.textContent = `${mm}:${ss}:${tt}`;
+}
+function syncTimerButton() {
+  const toggleBtn = document.getElementById("btoggle");
+  const toggleLabel = document.getElementById("toggle-label");
+  if (toggleBtn) {
+    toggleBtn.classList.toggle("is-running", run);
+    toggleBtn.classList.toggle("btn-stop", run);
+    toggleBtn.classList.toggle("btn-start", !run);
+    toggleBtn.setAttribute("aria-label", run ? "Stop timer" : "Start timer");
   }
+  if (toggleLabel) toggleLabel.textContent = run ? "Stop" : "Start";
+}
+function toggleSW() {
+  if (run) stopSW();
+  else startSW();
 }
 function startSW() {
   if (run) return;
+  msEl = 0;
+  prev = {};
+  updateSeg(0);
   run = true;
-  t0 = Date.now() - msEl;
+  t0 = Date.now();
   refreshSaveState();
   iv = setInterval(() => {
     msEl = Date.now() - t0;
     updateSeg(msEl);
   }, 30);
-  document.getElementById("bst").style.opacity = ".35";
-  document.getElementById("bst").disabled = true;
-  document.getElementById("bsp").style.opacity = "1";
-  document.getElementById("bsp").disabled = false;
+  syncTimerButton();
+  const oldStart = document.getElementById("bst");
+  const oldStop = document.getElementById("bsp");
+  if (oldStart) {
+    oldStart.style.opacity = ".35";
+    oldStart.disabled = true;
+  }
+  if (oldStop) {
+    oldStop.style.opacity = "1";
+    oldStop.disabled = false;
+  }
 }
 function stopSW() {
   clearInterval(iv);
   run = false;
-  document.getElementById("bst").style.opacity = "1";
-  document.getElementById("bst").disabled = false;
-  document.getElementById("bsp").style.opacity = ".35";
-  document.getElementById("bsp").disabled = true;
+  syncTimerButton();
+  const oldStart = document.getElementById("bst");
+  const oldStop = document.getElementById("bsp");
+  if (oldStart) {
+    oldStart.style.opacity = "1";
+    oldStart.disabled = false;
+  }
+  if (oldStop) {
+    oldStop.style.opacity = ".35";
+    oldStop.disabled = true;
+  }
   refreshSaveState();
 }
 function resetSW() {
@@ -174,32 +162,9 @@ function resetSW() {
   prev = {};
   refreshSaveState();
 }
-const PRELOAD_DATA = [
-  { dist: 69, sinks: [12.6, 12.7] },
-  { dist: 65, sinks: [11.4, 11.9] },
-  { dist: 61, sinks: [11.2, 11.7] },
-  { dist: 57, sinks: [10.9, 10.5] },
-  { dist: 53, sinks: [10.2, 10.0] },
-  { dist: 49, sinks: [8.8, 8.6] },
-  { dist: 45, sinks: [8.0, 8.6, 8.4] },
-  { dist: 41, sinks: [7.1, 6.5, 7.2] },
-  { dist: 36, sinks: [3.7, 3.7] },
-  { dist: 33, sinks: [2.4, 2.5] },
-  { dist: 30, sinks: [2.1] },
-  { dist: 27, sinks: [2.0] },
-  { dist: 24, sinks: [1.9, 2.1] },
-];
-const PRELOAD_POINTS = PRELOAD_DATA.flatMap((row) =>
-  row.sinks.map((s) => ({ dist: row.dist, sink: Math.round(s * 1000) })),
-);
-let pts = [...PRELOAD_POINTS],
-  undo = [],
-  redo = [],
-  chart = null,
-  lo = false,
-  ei = null,
-  ef = null,
-  conn = false;
+
+const PRELOAD_POINTS = [];
+
 function snapshot(v) {
   return JSON.parse(JSON.stringify(v));
 }
@@ -209,6 +174,47 @@ function refreshHistoryButtons() {
   if (bu) bu.disabled = !undo.length;
   if (br) br.disabled = !redo.length;
 }
+function pointColor(point) {
+  return point.color || "green";
+}
+function hasMultiplePointColors() {
+  return new Set(pts.map(pointColor)).size > 1;
+}
+function updateLegendVisibility() {
+  const legend = document.getElementById("chart-legend");
+  const chartWrap = document.getElementById("cw");
+  if (!legend) return;
+  const show = selectionMode || hasMultiplePointColors();
+  legend.classList.toggle("is-hidden", !show);
+  legend.setAttribute("aria-hidden", show ? "false" : "true");
+  if (chartWrap) chartWrap.classList.toggle("selecting", selectionMode);
+}
+function clearPointSelection() {
+  selectionMode = false;
+  selectedPoints.clear();
+  updateLegendVisibility();
+  if (chart) chart.update("none");
+}
+function togglePointSelection(index) {
+  if (index == null || index < 0 || index >= pts.length) return;
+  selectionMode = true;
+  if (selectedPoints.has(index)) selectedPoints.delete(index);
+  else selectedPoints.add(index);
+  if (!selectedPoints.size) selectionMode = false;
+  updateLegendVisibility();
+  if (chart) chart.update("none");
+}
+function applySelectedColor(color) {
+  if (!selectedPoints.size || !POINT_COLORS[color]) return;
+  undo.push(snapshot(pts));
+  redo = [];
+  selectedPoints.forEach((index) => {
+    if (pts[index]) pts[index].color = color;
+  });
+  setDirty();
+  clearPointSelection();
+  renderAll();
+}
 function plotPoint() {
   if (run || msEl <= 0) return;
   const d = parseFloat(document.getElementById("din").value);
@@ -216,9 +222,10 @@ function plotPoint() {
   const prevPts = pts.map((p) => ({ ...p }));
   undo.push(snapshot(pts));
   redo = [];
-  pts.push({ dist: d, sink: msEl });
+  pts.push({ dist: d, sink: msEl, color: "green" });
   stopSW();
   resetSW();
+  setDirty();
   renderAll("add", prevPts);
 }
 function undoLast() {
@@ -226,6 +233,9 @@ function undoLast() {
   redo.push(snapshot(pts));
   pts = undo.pop();
   ei = null;
+  selectedPoints.clear();
+  selectionMode = false;
+  setDirty();
   renderAll();
 }
 function redoLast() {
@@ -233,6 +243,9 @@ function redoLast() {
   undo.push(snapshot(pts));
   pts = redo.pop();
   ei = null;
+  selectedPoints.clear();
+  selectionMode = false;
+  setDirty();
   renderAll();
 }
 function deletePoint(i) {
@@ -240,30 +253,60 @@ function deletePoint(i) {
   redo = [];
   pts.splice(i, 1);
   ei = null;
+  selectedPoints.clear();
+  selectionMode = false;
+  setDirty();
   renderAll();
 }
 function clearAll(e) {
-  e.stopPropagation();
+  if (e) e.stopPropagation();
   if (!pts.length) return;
   if (!confirm("Clear all?")) return;
   undo.push(snapshot(pts));
   redo = [];
   pts = [];
   ei = null;
+  selectedPoints.clear();
+  selectionMode = false;
+  setDirty();
   renderAll();
 }
 function toggleList() {
-  lo = !lo;
-  document.getElementById("lbody").classList.toggle("open", lo);
-  document.getElementById("lw").classList.toggle("open", lo);
-  document.getElementById("la").style.transform = lo
-    ? "rotate(180deg)"
-    : "rotate(0)";
+  if (lo) closeTableModal();
+  else openTableModal();
+}
+function openTableModal() {
+  lo = true;
+  const modal = document.getElementById("table-modal");
+  if (modal) {
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+  }
+  const lw = document.getElementById("lw");
+  if (lw) lw.classList.add("open");
+  const la = document.getElementById("la");
+  if (la) la.style.transform = "rotate(180deg)";
+  document.body.classList.add("modal-open");
+  renderList();
+}
+function closeTableModal() {
+  lo = false;
+  const modal = document.getElementById("table-modal");
+  if (modal) {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+  }
+  const lw = document.getElementById("lw");
+  if (lw) lw.classList.remove("open");
+  const la = document.getElementById("la");
+  if (la) la.style.transform = "rotate(0)";
+  document.body.classList.remove("modal-open");
 }
 function toggleConnect() {
   conn = !conn;
   document.getElementById("cbtn").classList.toggle("on", conn);
   document.getElementById("clbl").textContent = conn ? "Connected" : "Connect";
+  setDirty();
 }
 function startEdit(i, f) {
   ei = i;
@@ -293,21 +336,20 @@ function commitEdit(i) {
   else pts[i].sink = Math.round(v * 1000);
   ei = null;
   ef = null;
+  setDirty();
   renderAll();
 }
 function xMax(v) {
-  if (!v.length) return 100;
-  return Math.ceil(Math.max(...v) / 10) * 10;
+  if (!v.length) return 60;
+  return Math.max(60, Math.ceil(Math.max(...v) / 10) * 10);
 }
 function yNice(v) {
-  if (!v) return { max: 5, step: 1 };
-  const s = v > 10 ? 5 : v > 4 ? 2 : 1;
-  return { max: Math.ceil(v / s) * s, step: s };
+  if (!v) return { max: 6, step: 1 };
+  const s = v > 6 ? 2 : 1;
+  return { max: Math.max(6, Math.ceil(v / s) * s), step: s };
 }
-function getYSpec(sourcePts, xM) {
-  const yDataMax = sourcePts.length
-    ? Math.max(...sourcePts.map((p) => p.sink / 1000))
-    : 10;
+function getYSpec(sourcePts) {
+  const yDataMax = sourcePts.length ? Math.max(...sourcePts.map((p) => p.sink / 1000)) : 6;
   return yNice(yDataMax);
 }
 function applyEqualViewport(xM, yn) {
@@ -315,28 +357,31 @@ function applyEqualViewport(xM, yn) {
   const wrap = document.getElementById("cw");
   if (!frame || !wrap) return;
   if (yAxisMode !== "equal") {
-    frame.style.top = "0";
-    frame.style.bottom = "30px";
     frame.style.height = "auto";
+    frame.style.top = CHART_PLOT_TOP + "px";
+    frame.style.bottom = CHART_PLOT_BOTTOM + "px";
     return;
   }
   const w = wrap.clientWidth || 1;
   const h = wrap.clientHeight || 1;
   const desired = Math.round(w * (yn.max / Math.max(xM, 1)));
-  const usable = Math.max(120, h - 30);
-  const clamped = Math.max(120, Math.min(usable, desired));
+  const available = Math.max(140, h - CHART_PLOT_TOP - CHART_PLOT_BOTTOM);
+  const clamped = Math.max(140, Math.min(available, desired));
   frame.style.bottom = "auto";
-  frame.style.top = Math.max(0, Math.round((usable - clamped) / 2)) + "px";
   frame.style.height = clamped + "px";
+  frame.style.top = CHART_PLOT_TOP + Math.max(0, Math.round((available - clamped) / 2)) + "px";
 }
 function toChartData(arr) {
-  return arr.map((p) => ({ x: p.dist, y: +(p.sink / 1000).toFixed(2) }));
+  return arr.map((p, i) => ({ x: p.dist, y: +(p.sink / 1000).toFixed(2), color: pointColor(p), index: i }));
 }
 function renderAll(mode, prevPts) {
   const n = pts.length;
   document.getElementById("pc").textContent = n + " pts";
-  document.getElementById("lb").textContent = n + " pts";
+  document.getElementById("lb").textContent = "Points: " + n;
+  const mc = document.getElementById("modal-count");
+  if (mc) mc.textContent = n + " pts";
   refreshHistoryButtons();
+  updateLegendVisibility();
   renderChart(mode, prevPts);
   renderList();
 }
@@ -345,34 +390,30 @@ function setChartState(data, xM, yn, anim) {
     chart = new Chart(document.getElementById("c"), {
       type: "scatter",
       data: {
-        datasets: [
-          {
-            data,
-            backgroundColor: "#ADD144",
-            pointRadius: 3,
-            pointHoverRadius: 4,
-            pointBorderColor: "rgba(0,0,0,0)",
-          },
-        ],
+        datasets: [{
+          data,
+          backgroundColor: (ctx) => POINT_COLORS[(ctx.raw && ctx.raw.color) || "green"],
+          pointRadius: (ctx) => (ctx.raw && selectedPoints.has(ctx.raw.index) ? 7 : 5),
+          pointHoverRadius: 7,
+          pointBorderColor: (ctx) => (ctx.raw && selectedPoints.has(ctx.raw.index) ? "#FFFFFF" : "rgba(0,0,0,0)"),
+          pointBorderWidth: (ctx) => (ctx.raw && selectedPoints.has(ctx.raw.index) ? 2 : 0),
+        }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         animation: anim,
-        layout: { padding: { top: 2, right: 2 } },
+        layout: { padding: { top: 0, right: 6, bottom: 4, left: 0 } },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: "#2C2C2E",
-            borderColor: "#3A3A3C",
+            backgroundColor: "#272525",
+            borderColor: "#6A6264",
             borderWidth: 1,
             titleColor: "#ADD144",
-            bodyColor: "#8E8E93",
+            bodyColor: "#A9A2A4",
             padding: 10,
-            callbacks: {
-              title: (i) => "Distance: " + i[0].parsed.x + "m",
-              body: (i) => "Sink: " + i[0].parsed.y.toFixed(1) + "s",
-            },
+            callbacks: { title: (i) => "Distance: " + i[0].parsed.x + "m", body: (i) => "Sink: " + i[0].parsed.y.toFixed(1) + "s" },
           },
         },
         scales: {
@@ -380,37 +421,19 @@ function setChartState(data, xM, yn, anim) {
             type: "linear",
             min: 0,
             max: xM,
-            title: {
-              display: true,
-              text: "Distance (m)",
-              color: "#8E8E93",
-              font: { family: "Jost", size: 11 },
-            },
-            grid: { color: "rgba(255,255,255,0.05)", drawBorder: false },
+            title: { display: true, text: "Distance [m]", color: "#A9A2A4", font: { family: "Jost", size: 10 } },
+            grid: { color: "rgba(169,162,164,0.16)", drawBorder: false },
             border: { display: false },
-            ticks: {
-              color: "#8E8E93",
-              font: { family: "Jost", size: 10 },
-              stepSize: 10,
-            },
+            ticks: { color: "#A9A2A4", font: { family: "Jost", size: 10 }, stepSize: 10 },
           },
           y: {
             min: 0,
             max: yn.max,
             reverse: true,
-            title: {
-              display: true,
-              text: "Sink (s)",
-              color: "#8E8E93",
-              font: { family: "Jost", size: 11 },
-            },
-            grid: { color: "rgba(255,255,255,0.05)", drawBorder: false },
+            title: { display: true, text: "Sink time [s]", color: "#A9A2A4", font: { family: "Jost", size: 10 } },
+            grid: { color: "rgba(169,162,164,0.16)", drawBorder: false },
             border: { display: false },
-            ticks: {
-              color: "#8E8E93",
-              font: { family: "Jost", size: 10 },
-              stepSize: yn.step,
-            },
+            ticks: { color: "#A9A2A4", font: { family: "Jost", size: 10 }, stepSize: yn.step },
           },
         },
       },
@@ -427,18 +450,15 @@ function setChartState(data, xM, yn, anim) {
 function renderChart(mode, prevPts) {
   const data = toChartData(pts);
   const xM = xMax(pts.map((p) => p.dist));
-  const yn = getYSpec(pts, xM);
+  const yn = getYSpec(pts);
   applyEqualViewport(xM, yn);
   if (mode === "add" && prevPts && prevPts.length + 1 === pts.length) {
-    const oldYn = getYSpec(prevPts, xM);
+    const oldYn = getYSpec(prevPts);
     applyEqualViewport(xM, oldYn);
     const oldData = toChartData(prevPts);
     const last = pts[pts.length - 1];
     const dropFromTop = [...oldData, { x: last.dist, y: 0 }];
-    const dropToTarget = [
-      ...oldData,
-      { x: last.dist, y: +(last.sink / 1000).toFixed(2) },
-    ];
+    const dropToTarget = [...oldData, { x: last.dist, y: +(last.sink / 1000).toFixed(2) }];
     setChartState(dropFromTop, xM, oldYn, { duration: 0 });
     setChartState(dropToTarget, xM, oldYn, {
       duration: 800,
@@ -457,31 +477,106 @@ function renderList() {
   const h = a
     .map((p, ri) => {
       const i = p.oi;
-      const dc =
-        ei === i && ef === "dist"
-          ? `<input class="ei" id="ei" value="${p.dist}" type="number" style="color:#ADD144;" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
-          : `<div class="rv g e" ondblclick="startEdit(${i},'dist')">${p.dist}m</div>`;
-      const sc =
-        ei === i && ef === "sink"
-          ? `<input class="ei" id="ei" value="${(p.sink / 1000).toFixed(1)}" type="number" min="0" step="0.1" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
-          : `<div class="rv e" ondblclick="startEdit(${i},'sink')">${(p.sink / 1000).toFixed(1)}s</div>`;
-      return `<div class="lrow${ei === i ? " ed" : ""}"><div class="rn">${pts.length - ri}</div>${dc}${sc}<button class="bdel" onclick="deletePoint(${i})"><svg width="8" height="9" viewBox="0 0 8 9" fill="none"><path d="M1 2h6M3 3.5v3M5 3.5v3M1.5 2l.4 5h4.2L6 2" stroke="#EA523E" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>`;
+      const dc = ei === i && ef === "dist"
+        ? `<input class="ei" id="ei" value="${p.dist}" type="number" inputmode="decimal" style="color:#ADD144;" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
+        : `<div class="rv ${pointColor(p) === "red" ? "" : "g"} e" onclick="startEdit(${i},'dist')" ondblclick="startEdit(${i},'dist')">${p.dist}m</div>`;
+      const sc = ei === i && ef === "sink"
+        ? `<input class="ei" id="ei" value="${(p.sink / 1000).toFixed(1)}" type="number" inputmode="decimal" min="0" step="0.1" onkeydown="if(event.key==='Enter')commitEdit(${i});if(event.key==='Escape'){ei=null;ef=null;renderList();}" onblur="commitEdit(${i})">`
+        : `<div class="rv e" onclick="startEdit(${i},'sink')" ondblclick="startEdit(${i},'sink')">${(p.sink / 1000).toFixed(1)}s</div>`;
+      return `<div class="lrow${ei === i ? " ed" : ""}"><div class="rn">${pts.length - ri}</div>${dc}${sc}<button class="bdel" onclick="deletePoint(${i})" aria-label="Delete point">x</button></div>`;
     })
     .join("");
-  document.getElementById("lr").innerHTML =
-    h ||
-    '<div style="padding:8px;text-align:center;font-size:11px;color:#8E8E93;">No data</div>';
+  const modalRows = document.getElementById("lr-modal");
+  if (modalRows) {
+    modalRows.innerHTML = h || '<div style="padding:10px;text-align:center;font-size:11px;color:#A9A2A4;">No data</div>';
+  }
 }
-function initMetaDefaults(){
-  const t=document.getElementById("chart-time");
-  if(!t)return;
-  const now=new Date();
-  const local=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16);
-  t.value=local;
+function initMetaDefaults() {
+  const t = document.getElementById("chart-time");
+  if (t && !t.value) t.value = "19/06/2026";
+  ["chart-name", "chart-time", "chart-location"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("input", () => setDirty());
+  });
 }
+function initDistanceInputBehavior() {
+  const din = document.getElementById("din");
+  if (!din) return;
+  const selectAll = () => din.select();
+  const normalize = () => {
+    const digits = (din.value || "").replace(/[^\d]/g, "").slice(0, 3);
+    if (!digits) {
+      din.value = "1";
+      return;
+    }
+    const clamped = Math.max(1, Math.min(300, parseInt(digits, 10)));
+    din.value = String(clamped);
+  };
+  din.addEventListener("input", () => {
+    din.value = (din.value || "").replace(/[^\d]/g, "").slice(0, 3);
+    setDirty();
+  });
+  din.addEventListener("blur", normalize);
+  din.addEventListener("focus", selectAll);
+  din.addEventListener("click", selectAll);
+}
+function chartPointIndexFromEvent(event) {
+  if (!chart) return null;
+  const hits = chart.getElementsAtEventForMode(event, "nearest", { intersect: true }, false);
+  if (!hits.length) return null;
+  const raw = chart.data.datasets[hits[0].datasetIndex].data[hits[0].index];
+  return raw ? raw.index : null;
+}
+function initChartPointSelection() {
+  const canvas = document.getElementById("c");
+  if (!canvas) return;
+  canvas.addEventListener("pointerdown", (event) => {
+    const index = chartPointIndexFromEvent(event);
+    longPressPointIndex = index;
+    clearTimeout(longPressTimer);
+    if (index == null) return;
+    longPressTimer = setTimeout(() => {
+      suppressNextPointClick = true;
+      togglePointSelection(longPressPointIndex);
+    }, 520);
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => {
+    canvas.addEventListener(eventName, () => {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+      longPressPointIndex = null;
+    });
+  });
+  canvas.addEventListener("click", (event) => {
+    const index = chartPointIndexFromEvent(event);
+    if (suppressNextPointClick) {
+      suppressNextPointClick = false;
+      return;
+    }
+    if (selectionMode && index != null) togglePointSelection(index);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && selectionMode) clearPointSelection();
+  });
+}
+function initLegendEditing() {
+  ["legend-green", "legend-red"].forEach((id) => {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener("input", () => setDirty());
+  });
+}
+
 buildDisplay();
 updateSeg(0);
 refreshSaveState();
+pts = [...PRELOAD_POINTS];
 renderAll();
 initMetaDefaults();
+initDistanceInputBehavior();
+initChartPointSelection();
+initLegendEditing();
+setDirty(false);
 window.addEventListener("resize", () => renderAll());
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && lo) closeTableModal();
+});
